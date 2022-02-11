@@ -1,0 +1,26 @@
+import psycopg2
+from config import DB_URI
+
+conn = psycopg2.connect(DB_URI, sslmode='require')
+cursor = conn.cursor()
+
+
+async def add_to_db(user_id: int, user_name: str, user_surname: str, user_nickname: str):
+    cursor.execute(f'SELECT user_id FROM users WHERE user_id = {user_id}')
+    result = cursor.fetchone()
+    if not result:
+        cursor.execute('INSERT INTO users (user_id, user_name, user_surname, user_nickname) VALUES (%s, %s, %s, %s)',
+                       (user_id, user_name, user_surname, user_nickname))
+    conn.commit()
+
+
+async def get_all_id():
+    cursor.execute('SELECT user_id FROM users')
+    result = cursor.fetchall()
+    return (i[0] for i in result)
+
+
+async def get_all_users():
+    cursor.execute('SELECT * FROM users')
+    result = cursor.fetchall()
+    return result
