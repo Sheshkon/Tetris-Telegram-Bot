@@ -1,3 +1,3 @@
 # Tetris-Telegram-Bot
 Telegram bot for tetris game
-![alt text](file:///C:/Users/User/Desktop/example.gif)
+![alt text](https://github.com/Sheshkon/Tetris-Telegram-Bot/blob/main/readme/gifs/example.gif?raw=true)
