@@ -1,6 +1,6 @@
 
 # Tetris-Telegram-Bot
-Telegram bot for [tetris game](https://github.com/vitaliysheshkoff/Tetris-Multiplayer)
+[Telegram bot](https://t.me/tetris_game_tetris_bot?start=null) for [tetris game](https://github.com/vitaliysheshkoff/Tetris-Multiplayer)
 
 
 <h2 align="center">Common functionality</h2>
