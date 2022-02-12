@@ -27,10 +27,8 @@ async def send_welcome(message: Message):
 
     if 'iwannaplay' in message.text:
         users = await get_all_id()
-        await message.answer(message.text)
         data = message.text.split('=')[1]
         play_key = InlineKeyboardMarkup()
-
         play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE+f'?room={data}'))
         for user in users:
             if user != user_id:
