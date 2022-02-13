@@ -1,5 +1,8 @@
+from asyncio import sleep, create_task
+from contextlib import suppress
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.dispatcher.filters import Command
+from aiogram.utils.exceptions import MessageCantBeDeleted, MessageToDeleteNotFound
 from keyboards import open_key
 from exel import create_exel, delete_file
 from main import bot, dp
@@ -10,6 +13,12 @@ from db import add_to_db, get_all_id, get_all_users
 async def restart_server(dp):
     for admin in ADMINS_ID:
         await bot.send_message(admin, text='Restart server &#127758;')
+
+
+async def delete_message(message: Message, sleep_time: int = 0):
+    await sleep(sleep_time)
+    with suppress(MessageCantBeDeleted, MessageToDeleteNotFound):
+        await message.delete()
 
 
 @dp.message_handler(Command('game'))
@@ -33,9 +42,11 @@ async def send_welcome(message: Message):
         for user in users:
             if user != user_id:
                 try:
-                    await bot.send_message(user, 'Who wanna play?', reply_markup=play_key)
+                    msg = await bot.send_message(user, 'Who wanna play?', reply_markup=play_key)
+                    create_task(delete_message(msg, 60))
                 except:
                     continue
+
 
         await message.answer('request was sent')
 
