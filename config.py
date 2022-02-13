@@ -1,7 +1,7 @@
 import os
 
 BOT_TOKEN = os.environ['TOKEN']
-URL_GAME_SITE = 'https://tetis-game.herokuapp.com/'
+URL_GAME_SITE = 'https://sheshkon.github.io/redirect-site/'
 ADMINS_ID = (int(os.environ['ADMIN_ID_1']), int(os.environ['ADMIN_ID_2']))
 DB_URI = os.environ['DB_URI']
 
