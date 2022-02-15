@@ -48,7 +48,6 @@ async def send_welcome(message: Message):
                 except:
                     continue
 
-
         await message.answer('request was sent')
 
     else:

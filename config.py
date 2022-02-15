@@ -36,7 +36,7 @@ RULES_TEXT = '<b>Goals</b>\n\n' \
 HELP_TEXT = '<b>List of commands:</b>\n' \
             '/start - start bot\n' \
             '/help - show list of commands\n' \
-            '/game - site link\n' \
+            '/site - site link\n' \
             '/rules - show rules of the game\n' \
             '/about - show authors\n' \
             '/screenshots - show gameplay screenshots\n' \
@@ -46,9 +46,9 @@ HELP_TEXT = '<b>List of commands:</b>\n' \
 ABOUT_TEXT = "It is a bot for multiplayer tetris game created by <a " \
              "href='https://github.com/vitaliysheshkoff/Tetris-Multiplayer'><span class='tg-spoiler'>Author link</span></a> "
 
-SCREENSHOTS_LINKS = ['https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/screenshots/image_2021-12-31_23-44-31.png',
+SCREENSHOTS_LINKS = ('https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/screenshots/image_2021-12-31_23-44-31.png',
                      'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/screenshots/image_2021-12-31_23-27-22.png',
                      'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/screenshots/image_2021-12-31_23-20-26.png',
                      'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/screenshots/image_2021-12-31_23-21-18.png',
                      'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/screenshots/image_2021-12-31_23-25-15.png',
-                     'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/screenshots/image_2022-01-01_00-13-54.png']
+                     'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/screenshots/image_2022-01-01_00-13-54.png')
