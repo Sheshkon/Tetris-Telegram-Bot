@@ -21,7 +21,7 @@ async def delete_message(message: Message, sleep_time: int = 0):
         await message.delete()
 
 
-@dp.message_handler(Command('game'))
+@dp.message_handler(Command('site'))
 async def show(message: Message):
     await message.answer(text='In this site you can download the game', reply_markup=open_key)
 
@@ -37,6 +37,7 @@ async def send_welcome(message: Message):
     if 'iwannaplay' in message.text:
         users = await get_all_id()
         data = message.text.split('=')[1]
+        print(data)
         play_key = InlineKeyboardMarkup()
         play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE+f'?room={data}'))
         for user in users:
