@@ -55,7 +55,8 @@ async def send_welcome(message: Message):
 
     else:
         await message.answer(START_TEXT)
-        await bot.send_animation(message.from_user.id,
+        await message.answer_animation(animation='https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif')
+        # await bot.send_animation(message.from_user.id,
                                 animation='https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif')
 
 
