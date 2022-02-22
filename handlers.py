@@ -37,13 +37,16 @@ async def send_welcome(message: Message):
     if 'iwannaplay' in message.text:
         users = await get_all_id()
         data = message.text.split('=')[1]
-        print(data)
         play_key = InlineKeyboardMarkup()
+        nickname_request = message.from_user.username
+        if not nickname_request:
+            nickname_request = message.from_user.first_name
+
         play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE+f'?room={data}'))
         for user in users:
             if user != user_id:
                 try:
-                    msg = await bot.send_message(user, 'Who wanna play?', reply_markup=play_key)
+                    msg = await bot.send_message(user, f'{nickname_request}\nWho wanna play with me?', reply_markup=play_key)
                     create_task(delete_message(msg, 60))
                 except:
                     continue
