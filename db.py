@@ -18,7 +18,7 @@ async def add_to_chats_db(chat_id: int, chat_name: str, chat_surname: str, chat_
     cursor.execute(f'SELECT chat_id FROM chats WHERE chat_id = {chat_id}')
     result = cursor.fetchone()
     if not result:
-        cursor.execute('INSERT INTO users (chat_id, chat_name, chat_surname, chat_nickname) VALUES (%s, %s, %s, %s)',
+        cursor.execute('INSERT INTO chats (chat_id, chat_name, chat_surname, chat_nickname) VALUES (%s, %s, %s, %s)',
                        (chat_id, chat_name, chat_surname, chat_nickname))
     conn.commit()
 
