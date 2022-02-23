@@ -27,7 +27,7 @@ async def show(message: Message):
 
 
 async def get_user_info(msg: Message):
-    return msg.from_user.id, msg.from_user.first_name, msg.last_name, msg.from_user.username
+    return msg.from_user.id, msg.from_user.first_name, msg.from_user.last_name, msg.from_user.username
 
 
 async def get_chat_info(msg: Message):
