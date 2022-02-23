@@ -127,3 +127,8 @@ async def send_file(message: Message):
         users = await get_all_id("user_id", "users")
         for user in users:
             await bot.forward_message(user, message.chat.id, message.message_id)
+
+
+@dp.message_handler(Command('decrypt'))
+async def show_screens(message: Message):
+    await message.answer(message.text)
