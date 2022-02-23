@@ -119,14 +119,14 @@ async def show_screens(message: Message):
         await message.answer_photo(screenshot)
 
 
-@dp.message_handler(
-    content_types=['document', 'text', 'audio', 'photo', 'sticker', 'video', 'video_note', 'voice', 'location',
-                   'contact'])
-async def send_file(message: Message):
-    if message.chat.id in ADMINS_ID:
-        users = await get_all_id("user_id", "users")
-        for user in users:
-            await bot.forward_message(user, message.chat.id, message.message_id)
+# @dp.message_handler(
+#     content_types=['document', 'text', 'audio', 'photo', 'sticker', 'video', 'video_note', 'voice', 'location',
+#                    'contact'])
+# async def send_file(message: Message):
+#     if message.chat.id in ADMINS_ID:
+#         users = await get_all_id("user_id", "users")
+#         for user in users:
+#             await bot.forward_message(user, message.chat.id, message.message_id)
 
 
 @dp.message_handler(Command('decrypt'))
