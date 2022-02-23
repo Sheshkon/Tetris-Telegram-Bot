@@ -8,6 +8,6 @@ async def decrypt(encrypted_data: str):
     key = RSA.importKey(PRIVATE_KEY)
     key = PKCS1_OAEP.new(key)
     decoded_data = base64.b64decode(encrypted_data)
-    decrypted_text = key.decrypt(decoded_data)
+    decrypted_text = key.decrypt(decoded_data).decode('utf-8')
     print(decrypted_text)
     return decrypted_text
