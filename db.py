@@ -14,7 +14,7 @@ async def add_to_users_db(user_id: int, user_name: str, user_surname: str, user_
     conn.commit()
 
 
-async def add_to_groups_db(chat_id: int, chat_name: str, chat_surname: str, chat_nickname: str):
+async def add_to_chats_db(chat_id: int, chat_name: str, chat_surname: str, chat_nickname: str):
     cursor.execute(f'SELECT chat_id FROM chats WHERE chat_id = {chat_id}')
     result = cursor.fetchone()
     if not result:

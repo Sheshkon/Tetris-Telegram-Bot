@@ -7,7 +7,7 @@ from keyboards import open_key
 from exel import create_exel, delete_file
 from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE
-from db import add_to_users_db, get_all_id, get_all_users
+from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users
 
 
 async def restart_server(dp):
@@ -38,7 +38,8 @@ async def send_welcome(message: Message):
     chat_surname = message.chat.last_name
     chat_nickname = message.chat.username
 
-    await add_to_users_db(user_id, user_name, user_surname, user_nickname, table_name="users")
+    await add_to_users_db(user_id, user_name, user_surname, user_nickname)
+    await add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname)
 
     if 'iwannaplay' in message.text:
         users = await get_all_id("user_id", "users")
