@@ -26,18 +26,18 @@ async def show(message: Message):
     await message.answer(text='In this site you can download the game', reply_markup=open_key)
 
 
+async def get_user_info(msg: Message):
+    return msg.from_user.id, msg.from_user.first_name, msg.last_name, msg.from_user.username
+
+
+async def get_chat_info(msg: Message):
+    return msg.chat.id, msg.chat.first_name, msg.chat.last_name, msg.chat.username, msg.chat.full_name
+
+
 @dp.message_handler(Command('start'))
 async def send_welcome(message: Message):
-    user_id = message.from_user.id
-    user_name = message.from_user.first_name
-    user_surname = message.from_user.last_name
-    user_nickname = message.from_user.username
-
-    chat_id = message.chat.id
-    chat_name = message.chat.first_name
-    chat_surname = message.chat.last_name
-    chat_nickname = message.chat.username
-    chat_full_name = message.chat.full_name
+    user_id, user_name, user_surname, user_nickname = await get_user_info(message)
+    chat_id, chat_name, chat_surname, chat_nickname, chat_full_name = await get_chat_info(message)
 
     await add_to_users_db(user_id, user_name, user_surname, user_nickname)
     await add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
@@ -49,9 +49,8 @@ async def send_welcome(message: Message):
 
         data = message.text.split('=')[1]
         play_key = InlineKeyboardMarkup()
-        nickname_request = message.from_user.username
-        if not nickname_request:
-            nickname_request = message.from_user.first_name
+        username_request, name_request = message.from_user.username, message.from_user.first_name
+        nickname_request = username_request if username_request else name_request
 
         play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE+f'?room={data}'))
         for user in users:
