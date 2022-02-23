@@ -26,7 +26,7 @@ async def add_to_chats_db(chat_id: int, chat_name: str, chat_surname: str, chat_
 async def get_all_id(name_id: str, table: str):
     cursor.execute(f'SELECT {name_id} FROM {table}')
     result = cursor.fetchall()
-    return (i[0] for i in result)
+    return [i[0] for i in result]
 
 
 async def get_all_users(table: str):
