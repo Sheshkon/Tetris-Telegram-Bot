@@ -8,6 +8,7 @@ from exel import create_exel, delete_file
 from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE
 from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users
+from rsa_decrypt import decrypt
 
 
 async def restart_server(dp):
@@ -52,11 +53,12 @@ async def send_welcome(message: Message):
         username_request, name_request = message.from_user.username, message.from_user.first_name
         nickname_request = username_request if username_request else name_request
 
-        play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE+f'?room={data}'))
+        play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={data}'))
         for user in users:
             if user != user_id:
                 try:
-                    msg = await bot.send_message(user, f'{nickname_request}\nWho wanna play with me?', reply_markup=play_key)
+                    msg = await bot.send_message(user, f'{nickname_request}\nWho wanna play with me?',
+                                                 reply_markup=play_key)
                     create_task(delete_message(msg, 60))
                 except:
                     continue
@@ -65,7 +67,8 @@ async def send_welcome(message: Message):
 
     else:
         await message.answer(START_TEXT)
-        await message.answer_animation(animation='https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif')
+        await message.answer_animation(
+            animation='https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif')
         # await bot.send_animation(message.from_user.id,
         #                         animation='https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif')
 
@@ -131,4 +134,6 @@ async def show_screens(message: Message):
 
 @dp.message_handler(Command('decrypt'))
 async def show_screens(message: Message):
-    await message.answer(message.text)
+    encrypted_msg = message.text[message.text.find(' '):]
+    decrypted_msg = await decrypt(encrypted_msg)
+    await message.answer(decrypted_msg)
