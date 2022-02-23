@@ -7,7 +7,7 @@ from keyboards import open_key
 from exel import create_exel, delete_file
 from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE
-from db import add_to_db, get_all_id, get_all_users
+from db import add_to_users_db, get_all_id, get_all_users
 
 
 async def restart_server(dp):
@@ -32,10 +32,19 @@ async def send_welcome(message: Message):
     user_name = message.from_user.first_name
     user_surname = message.from_user.last_name
     user_nickname = message.from_user.username
-    await add_to_db(user_id, user_name, user_surname, user_nickname)
+
+    chat_id = message.chat.id
+    chat_name = message.chat.first_name
+    chat_surname = message.chat.last_name
+    chat_nickname = message.chat.username
+
+    await add_to_users_db(user_id, user_name, user_surname, user_nickname, table_name="users")
 
     if 'iwannaplay' in message.text:
-        users = await get_all_id()
+        users = await get_all_id("user_id", "users")
+        groups = await(get_all_id("chat_id", "chats"))
+        users += groups
+
         data = message.text.split('=')[1]
         play_key = InlineKeyboardMarkup()
         nickname_request = message.from_user.username
@@ -64,7 +73,7 @@ async def send_welcome(message: Message):
 async def send_all(message: Message):
     if message.chat.id in ADMINS_ID:
         await message.answer('start')
-        users = await get_all_id()
+        users = await get_all_id("user_id", "users")
         for user in users:
             try:
                 await bot.send_message(user, message.text[message.text.find(' '):])
@@ -97,7 +106,7 @@ async def show_rules(message: Message):
 @dp.message_handler(Command('getall'))
 async def show_all_users(message: Message):
     if message.chat.id in ADMINS_ID:
-        users = await get_all_users()
+        users = await get_all_users("users")
         file_path = await create_exel(users)
         await message.answer_document(open(file_path, "rb"))
         await delete_file(file_path)
@@ -114,6 +123,6 @@ async def show_screens(message: Message):
                    'contact'])
 async def send_file(message: Message):
     if message.chat.id in ADMINS_ID:
-        users = await get_all_id()
+        users = await get_all_id("user_id", "users")
         for user in users:
             await bot.forward_message(user, message.chat.id, message.message_id)
