@@ -7,7 +7,7 @@ from keyboards import open_key
 from exel import create_exel, delete_file
 from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE
-from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users
+from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_user_db_id, get_chat_db_id
 from rsa_decrypt import decrypt
 
 
@@ -35,6 +35,19 @@ async def get_chat_info(msg: Message):
     return msg.chat.id, msg.chat.first_name, msg.chat.last_name, msg.chat.username, msg.chat.full_name
 
 
+async def get_data(msg: Message):
+    data = msg.text.split('=')
+
+    room, opponent = data[1], data[2]
+    if opponent == 'all':
+        return room, opponent
+
+    opponent = int(opponent)
+    opponent_id = get_user_id(opponent) if opponent > 0 else get_chat_id(abs(opponent))
+
+    return room, opponent_id
+
+
 @dp.message_handler(Command('start'))
 async def send_welcome(message: Message):
     user_id, user_name, user_surname, user_nickname = await get_user_info(message)
@@ -42,19 +55,21 @@ async def send_welcome(message: Message):
 
     await add_to_users_db(user_id, user_name, user_surname, user_nickname)
     await add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
-    await message.answer(message.text)
+    # await message.answer(message.text)
 
     if 'iwannaplay' in message.text:
-        users = await get_all_id("user_id", "users")
-        groups = await(get_all_id("chat_id", "chats"))
-        users += groups
+        room, opponent = get_data(message)
 
-        data = message.text.split('=')[1]
+        users = await get_all_id("user_id", "users") if opponent == 'all' else [opponent]
+        # groups = await(get_all_id("chat_id", "chats"))
+        # users += groups
+
         play_key = InlineKeyboardMarkup()
         username_request, name_request = message.from_user.username, message.from_user.first_name
         nickname_request = username_request if username_request else name_request
+        opponent = get_user_db_id(message.from_user.id)
 
-        play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={data}'))
+        play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={opponent}'))
         for user in users:
             if user != user_id:
                 try:
@@ -70,8 +85,6 @@ async def send_welcome(message: Message):
         await message.answer(START_TEXT)
         await message.answer_animation(
             animation='https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif')
-        # await bot.send_animation(message.from_user.id,
-        #                         animation='https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif')
 
 
 @dp.message_handler(Command('sendall'))

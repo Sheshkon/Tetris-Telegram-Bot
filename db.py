@@ -39,3 +39,27 @@ async def get_all_users(table: str):
     cursor.execute(f'SELECT * FROM {table}')
     result = cursor.fetchall()
     return result
+
+
+def get_user_id(user_db_id):
+    cursor.execute(f'SELECT user_id FROM users WHERE user_db_id = {user_db_id}')
+    result = cursor.fetchone()
+    return result
+
+
+def get_chat_id(chat_db_id):
+    cursor.execute(f'SELECT chat_id FROM chats WHERE user_db_id = {chat_db_id}')
+    result = cursor.fetchone()
+    return result
+
+
+def get_user_db_id(user_id):
+    cursor.execute(f'SELECT user_db_id FROM users WHERE user_id = {user_id}')
+    result = cursor.fetchone()
+    return result
+
+
+def get_chat_db_id(chat_id):
+    cursor.execute(f'SELECT chat_db_id FROM chats WHERE chat_id = {chat_id}')
+    result = cursor.fetchone()
+    return result
