@@ -45,6 +45,8 @@ def get_data(msg: Message):
     opponent = int(opponent)
     opponent_id = get_user_id(opponent) if opponent > 0 else get_chat_id(abs(opponent))
 
+    print(opponent_id)
+
     return room, opponent_id
 
 
