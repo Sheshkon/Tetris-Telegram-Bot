@@ -11,6 +11,9 @@ async def add_to_users_db(user_id: int, user_name: str, user_surname: str, user_
     if not result:
         cursor.execute('INSERT INTO users (user_id, user_name, user_surname, user_nickname) VALUES (%s, %s, %s, %s)',
                        (user_id, user_name, user_surname, user_nickname))
+    else:
+        cursor.execute(f'UPDATE users SET user_name = {user_name}, user_surname = {user_surname}, user_nickname = {user_nickname} WHERE user_id = {user_id}')
+
     conn.commit()
 
 
