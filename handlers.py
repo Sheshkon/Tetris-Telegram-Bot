@@ -35,7 +35,7 @@ async def get_chat_info(msg: Message):
     return msg.chat.id, msg.chat.first_name, msg.chat.last_name, msg.chat.username, msg.chat.full_name
 
 
-async def get_data(msg: Message):
+def get_data(msg: Message):
     data = msg.text.split('=')
 
     room, opponent = data[1], data[2]
