@@ -48,7 +48,7 @@ def get_user_id(user_db_id):
 
 
 def get_chat_id(chat_db_id):
-    cursor.execute(f'SELECT chat_id FROM chats WHERE user_db_id = {chat_db_id}')
+    cursor.execute(f'SELECT chat_id FROM chats WHERE chat_db_id = {chat_db_id}')
     result = cursor.fetchone()
     return result[0]
 
