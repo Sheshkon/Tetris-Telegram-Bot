@@ -42,6 +42,7 @@ async def send_welcome(message: Message):
 
     await add_to_users_db(user_id, user_name, user_surname, user_nickname)
     await add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
+    await message.answer(message.text)
 
     if 'iwannaplay' in message.text:
         users = await get_all_id("user_id", "users")
