@@ -69,7 +69,7 @@ async def send_welcome(message: Message):
         play_key = InlineKeyboardMarkup()
         username_request, name_request = message.from_user.username, message.from_user.first_name
         nickname_request = username_request if username_request else name_request
-        opponent = get_user_db_id(message.from_user.username) if message.from_user.username else message.from_user.first_name
+        opponent = message.from_user.username if message.from_user.username else message.from_user.first_name
         opponent = encode(opponent)
 
         play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={opponent}'))
