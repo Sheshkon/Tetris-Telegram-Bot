@@ -77,7 +77,7 @@ async def send_welcome(message: Message):
         for user in users:
             if user != user_id:
                 try:
-                    msg1 = await bot.send_message(user, f'{nickname_request}', parse_mode='HTML')
+                    msg1 = await bot.send_message(user, f'{nickname_request}', parse_mode='markdown')
                     msg2 = await bot.send_message(user, 'Who wanna play with me?',
                                                  reply_markup=play_key)
                     create_task(delete_message(msg1, 60))
