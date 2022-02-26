@@ -69,7 +69,8 @@ async def send_welcome(message: Message):
         play_key = InlineKeyboardMarkup()
         username_request, name_request = message.from_user.username, message.from_user.first_name
         nickname_request = username_request if username_request else name_request
-        player = message.from_user.username if message.from_user.username else message.from_user.first_name
+
+        player = message.from_user.username + f'({message.from_user.first_name})' if message.from_user.username else message.from_user.first_name
         player = encode(player)
 
         play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={player}'))
@@ -77,9 +78,9 @@ async def send_welcome(message: Message):
         for user in users:
             if user != user_id:
                 try:
-                    msg2 = await bot.send_message(user, f'{nickname_request}\nWho wanna play with me?',
+                    msg = await bot.send_message(user, f'{nickname_request}\nWho wanna play with me?',
                                                  reply_markup=play_key, parse_mode='None')
-                    create_task(delete_message(msg2, 60))
+                    create_task(delete_message(msg, 60))
                 except:
                     print("skip user: ", user)
                     continue
