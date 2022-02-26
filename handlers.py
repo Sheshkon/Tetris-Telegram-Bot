@@ -77,10 +77,10 @@ async def send_welcome(message: Message):
         for user in users:
             if user != user_id:
                 # try:
-                    msg1 = await bot.send_message(user, f'{nickname_request.encode()}', parse_mode='HTML')
+                #     msg1 = await bot.send_message(user, f'{nickname_request.encode()}', parse_mode='HTML')
                     msg2 = await bot.send_message(user, 'Who wanna play with me?',
                                                  reply_markup=play_key)
-                    create_task(delete_message(msg1, 60))
+                    # create_task(delete_message(msg1, 60))
                     create_task(delete_message(msg2, 60))
                 # except:
                     print("skip user: ", user)
