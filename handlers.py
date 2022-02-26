@@ -7,7 +7,7 @@ from keyboards import open_key
 from exel import create_exel, delete_file
 from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE
-from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_user_db_id, get_chat_db_id
+from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id
 from rsa_decrypt import decrypt, encode
 
 
@@ -70,7 +70,7 @@ async def send_welcome(message: Message):
         username_request, name_request = message.from_user.username, message.from_user.first_name
         nickname_request = username_request if username_request else name_request
 
-        player = message.from_user.username + f'({message.from_user.first_name})' if message.from_user.username else message.from_user.first_name
+        player = message.from_user.first_name + f'({message.from_user.nickname})' if message.from_user.username else message.from_user.first_name
         player = encode(player)
 
         play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={player}'))
