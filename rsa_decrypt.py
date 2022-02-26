@@ -19,9 +19,9 @@ def decrypt(encrypted_data: str):
 
 
 def encode(data: str):
-    new_data = data.encode('ascii')
+    new_data = data.encode('utf-8')
     base64_bytes = base64.b64encode(new_data)
-    base64_message = base64_bytes.decode('ascii')
+    base64_message = base64_bytes.decode('utf-8')
     print(base64_message)
 
     return base64_message
