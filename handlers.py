@@ -81,6 +81,7 @@ async def send_welcome(message: Message):
                                                  reply_markup=play_key)
                     create_task(delete_message(msg, 60))
                 except:
+                    print("skip user: ", user)
                     continue
 
         await message.answer('request was sent')
