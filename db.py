@@ -38,7 +38,7 @@ def get_all_id(name_id: str, table: str):
 def get_all_users(table: str):
     cursor.execute(f'SELECT * FROM {table}')
     result = cursor.fetchall()
-    return result[0]
+    return result
 
 
 def get_user_id(user_db_id):
