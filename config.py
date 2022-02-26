@@ -1,5 +1,12 @@
 import os
 
+from dotenv import load_dotenv
+
+try:
+    load_dotenv()
+except:
+    print("loading configs from server env")
+
 BOT_TOKEN = os.environ['TOKEN']
 URL_GAME_SITE = 'https://sheshkon.github.io/tetris-site/'
 ADMINS_ID = (int(os.environ['ADMIN_ID_1']), int(os.environ['ADMIN_ID_2']))
