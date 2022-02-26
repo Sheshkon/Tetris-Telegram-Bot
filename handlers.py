@@ -57,7 +57,7 @@ async def send_welcome(message: Message):
 
     add_to_users_db(user_id, user_name, user_surname, user_nickname)
     add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
-    # await message.answer(message.text)
+    await message.answer(message.text)
 
     if 'iwannaplay' in message.text:
         room, opponent = get_data(message)
