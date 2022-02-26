@@ -2,10 +2,8 @@ import os
 
 from dotenv import load_dotenv
 
-try:
-    load_dotenv()
-except:
-    print("loading configs from server env")
+
+load_dotenv()
 
 BOT_TOKEN = os.environ['TOKEN']
 URL_GAME_SITE = 'https://sheshkon.github.io/tetris-site/'
