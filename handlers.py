@@ -78,7 +78,7 @@ async def send_welcome(message: Message):
             if user != user_id:
                 # try:
                     msg = await bot.send_message(user, f'{nickname_request}\nWho wanna play with me?',
-                                                 reply_markup=play_key)
+                                                 reply_markup=play_key, parse_mode=None)
                     create_task(delete_message(msg, 60))
                 # except:
                     print("skip user: ", user)
