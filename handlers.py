@@ -55,15 +55,15 @@ async def send_welcome(message: Message):
     user_id, user_name, user_surname, user_nickname = get_user_info(message)
     chat_id, chat_name, chat_surname, chat_nickname, chat_full_name = get_chat_info(message)
 
-    await add_to_users_db(user_id, user_name, user_surname, user_nickname)
-    await add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
+    add_to_users_db(user_id, user_name, user_surname, user_nickname)
+    add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
     # await message.answer(message.text)
 
     if 'iwannaplay' in message.text:
         room, opponent = get_data(message)
 
         users = get_all_id("user_id", "users") if opponent == 'all' else [opponent]
-        # groups = await(get_all_id("chat_id", "chats"))
+        # groups = (get_all_id("chat_id", "chats"))
         # users += groups
 
         play_key = InlineKeyboardMarkup()
@@ -143,7 +143,7 @@ async def show_screens(message: Message):
 #                    'contact'])
 # async def send_file(message: Message):
 #     if message.chat.id in ADMINS_ID:
-#         users = await get_all_id("user_id", "users")
+#         users =  get_all_id("user_id", "users")
 #         for user in users:
 #             await bot.forward_message(user, message.chat.id, message.message_id)
 
@@ -151,5 +151,5 @@ async def show_screens(message: Message):
 @dp.message_handler(Command('decrypt'))
 async def show_screens(message: Message):
     encrypted_msg = message.text[message.text.find(' '):]
-    decrypted_msg = await decrypt(encrypted_msg)
+    decrypted_msg = decrypt(encrypted_msg)
     await message.answer(decrypted_msg)
