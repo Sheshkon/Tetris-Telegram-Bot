@@ -72,7 +72,7 @@ async def send_welcome(message: Message):
         player = message.from_user.username if message.from_user.username else message.from_user.first_name
         player = encode(player)
 
-        play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={room}'))
+        play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={player}'))
         print("users: ", users, "user_id: ", user_id)
         for user in users:
             if user != user_id:
