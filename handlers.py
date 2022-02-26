@@ -100,6 +100,7 @@ async def send_all(message: Message):
             try:
                 await bot.send_message(user, message.text[message.text.find(' '):])
             except:
+                print("skip user: ", user)
                 continue
 
         await message.answer('done')
