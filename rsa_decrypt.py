@@ -4,7 +4,7 @@ from Crypto.PublicKey import RSA
 from config import PRIVATE_KEY
 
 
-async def decrypt(encrypted_data: str):
+def decrypt(encrypted_data: str):
     decrypted_text = ''
     try:
         key = RSA.importKey(PRIVATE_KEY)

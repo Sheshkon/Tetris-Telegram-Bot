@@ -27,11 +27,11 @@ async def show(message: Message):
     await message.answer(text='In this site you can download the game', reply_markup=open_key)
 
 
-async def get_user_info(msg: Message):
+def get_user_info(msg: Message):
     return msg.from_user.id, msg.from_user.first_name, msg.from_user.last_name, msg.from_user.username
 
 
-async def get_chat_info(msg: Message):
+def get_chat_info(msg: Message):
     return msg.chat.id, msg.chat.first_name, msg.chat.last_name, msg.chat.username, msg.chat.full_name
 
 
@@ -52,8 +52,8 @@ def get_data(msg: Message):
 
 @dp.message_handler(Command('start'))
 async def send_welcome(message: Message):
-    user_id, user_name, user_surname, user_nickname = await get_user_info(message)
-    chat_id, chat_name, chat_surname, chat_nickname, chat_full_name = await get_chat_info(message)
+    user_id, user_name, user_surname, user_nickname = get_user_info(message)
+    chat_id, chat_name, chat_surname, chat_nickname, chat_full_name = get_chat_info(message)
 
     await add_to_users_db(user_id, user_name, user_surname, user_nickname)
     await add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
@@ -62,7 +62,7 @@ async def send_welcome(message: Message):
     if 'iwannaplay' in message.text:
         room, opponent = get_data(message)
 
-        users = await get_all_id("user_id", "users") if opponent == 'all' else [opponent]
+        users = get_all_id("user_id", "users") if opponent == 'all' else [opponent]
         # groups = await(get_all_id("chat_id", "chats"))
         # users += groups
 
@@ -93,7 +93,7 @@ async def send_welcome(message: Message):
 async def send_all(message: Message):
     if message.chat.id in ADMINS_ID:
         await message.answer('start')
-        users = await get_all_id("user_id", "users")
+        users = get_all_id("user_id", "users")
         for user in users:
             try:
                 await bot.send_message(user, message.text[message.text.find(' '):])
@@ -126,10 +126,10 @@ async def show_rules(message: Message):
 @dp.message_handler(Command('getall'))
 async def show_all_users(message: Message):
     if message.chat.id in ADMINS_ID:
-        users = await get_all_users("users")
-        file_path = await create_exel(users)
+        users = get_all_users("users")
+        file_path = create_exel(users)
         await message.answer_document(open(file_path, "rb"))
-        await delete_file(file_path)
+        delete_file(file_path)
 
 
 @dp.message_handler(Command('screenshots'))
