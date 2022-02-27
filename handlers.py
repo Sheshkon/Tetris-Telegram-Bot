@@ -93,7 +93,7 @@ async def send_welcome(message: Message):
 
 @dp.message_handler(Command('sendall'))
 async def send_all(message: Message):
-    if message.from_user.id in ADMINS_ID:
+    if message.chat.id in ADMINS_ID:
         await message.answer('start')
         users = get_all_id("user_id", "users")
         for user in users:
@@ -147,7 +147,7 @@ async def show_screens(message: Message):
     content_types=['document', 'text', 'audio', 'photo', 'sticker', 'video', 'video_note', 'voice', 'location',
                    'contact'])
 async def send_file(message: Message):
-    if message.from_user.id in ADMINS_ID:
+    if message.chat.id in ADMINS_ID:
         users = get_all_id("user_id", "users")
         for user in users:
             await bot.forward_message(user, message.chat.id, message.message_id)
