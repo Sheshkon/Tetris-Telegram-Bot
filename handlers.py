@@ -45,8 +45,6 @@ def get_data(msg: Message):
     opponent = int(opponent)
     opponent_id = get_user_id(opponent) if opponent > 0 else get_chat_id(abs(opponent))
 
-    print(opponent_id)
-
     return room, opponent_id
 
 
@@ -57,7 +55,7 @@ async def send_welcome(message: Message):
 
     add_to_users_db(user_id, user_name, user_surname, user_nickname)
     add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
-    print(f'{user_id} command: {message.text}')
+    print(f'{user_id, user_name, user_surname, user_nickname} command: {message.text}')
 
     if 'iwannaplay' in message.text:
         room, opponent = get_data(message)
@@ -80,6 +78,7 @@ async def send_welcome(message: Message):
                     msg = await bot.send_message(user, f'{player}:\nDo you wanna play with me?',
                                                  reply_markup=play_key, parse_mode='None')
                     create_task(delete_message(msg, 60))
+                    print(f'request was sent to {user}')
                 except:
                     print("skip user: ", user)
                     continue
@@ -100,6 +99,7 @@ async def send_all(message: Message):
         for user in users:
             try:
                 await bot.send_message(user, message.text[message.text.find(' '):])
+                print(f'message was sent to {user}')
             except:
                 print("skip user: ", user)
                 continue
@@ -129,10 +129,11 @@ async def show_rules(message: Message):
 
 @dp.message_handler(Command('getall'))
 async def show_all_users(message: Message):
-    if message.chat.id in ADMINS_ID:
+    if message.from_user.id in ADMINS_ID:
         users = get_all_users("users")
         file_path = create_exel(users)
         await message.answer_document(open(file_path, "rb"))
+        print(f'{message.from_user.id}: get all users')
         delete_file(file_path)
 
 
@@ -142,14 +143,14 @@ async def show_screens(message: Message):
         await message.answer_photo(screenshot)
 
 
-# @dp.message_handler(
-#     content_types=['document', 'text', 'audio', 'photo', 'sticker', 'video', 'video_note', 'voice', 'location',
-#                    'contact'])
-# async def send_file(message: Message):
-#     if message.chat.id in ADMINS_ID:
-#         users =  get_all_id("user_id", "users")
-#         for user in users:
-#             await bot.forward_message(user, message.chat.id, message.message_id)
+@dp.message_handler(
+    content_types=['document', 'text', 'audio', 'photo', 'sticker', 'video', 'video_note', 'voice', 'location',
+                   'contact'])
+async def send_file(message: Message):
+    if message.from_user.id in ADMINS_ID:
+        users = get_all_id("user_id", "users")
+        for user in users:
+            await bot.forward_message(user, message.chat.id, message.message_id)
 
 
 @dp.message_handler(Command('decrypt'))
@@ -157,3 +158,4 @@ async def show_screens(message: Message):
     encrypted_msg = message.text[message.text.find(' '):]
     decrypted_msg = decrypt(encrypted_msg)
     await message.answer(decrypted_msg)
+
