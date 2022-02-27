@@ -11,8 +11,11 @@ def add_to_users_db(user_id: int, user_name: str, user_surname: str, user_nickna
     if not result:
         cursor.execute('INSERT INTO users (user_id, user_name, user_surname, user_nickname) VALUES (%s, %s, %s, %s)',
                        (user_id, user_name, user_surname, user_nickname))
+        print(f'adding to db: {user_id, user_name, user_surname, user_nickname}')
     else:
-        cursor.execute(f"UPDATE users SET user_name = '{user_name}', user_surname = '{user_surname}', user_nickname = '{user_nickname}' WHERE user_id = '{user_id}'")
+        cursor.execute('UPDATE users SET user_name=%s, user_surname=%s, user_nickname=%s WHERE user_id=%s',
+                       (user_name, user_surname, user_nickname, user_id))
+        print(f'updating db: {user_id, user_name, user_surname, user_nickname}')
 
     conn.commit()
 
@@ -26,6 +29,7 @@ def add_to_chats_db(chat_id: int, chat_name: str, chat_surname: str, chat_nickna
         cursor.execute(
             'INSERT INTO chats (chat_id, chat_name, chat_surname, chat_nickname, chat_full_name) VALUES (%s, %s, %s, %s, %s)',
             (chat_id, chat_name, chat_surname, chat_nickname, chat_full_name))
+        print(f'adding to db: {chat_id, chat_name, chat_surname, chat_nickname, chat_full_name}')
     conn.commit()
 
 
