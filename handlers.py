@@ -143,19 +143,19 @@ async def show_screens(message: Message):
         await message.answer_photo(screenshot)
 
 
-@dp.message_handler(
-    content_types=['document', 'text', 'audio', 'photo', 'sticker', 'video', 'video_note', 'voice', 'location',
-                   'contact'])
-async def send_file(message: Message):
-    if message.from_user.id in ADMINS_ID:
-        users = get_all_id("user_id", "users")
-    for user in users:
-        try:
-            await bot.forward_message(user, message.chat.id, message.message_id)
-            print(f'message was sent to {user}')
-        except:
-            print("skip user: ", user)
-            continue
+# @dp.message_handler(
+#     content_types=['document', 'text', 'audio', 'photo', 'sticker', 'video', 'video_note', 'voice', 'location',
+#                    'contact'])
+# async def send_file(message: Message):
+#     if message.from_user.id in ADMINS_ID:
+#         users = get_all_id("user_id", "users")
+#     for user in users:
+#         try:
+#             await bot.forward_message(user, message.chat.id, message.message_id)
+#             print(f'message was sent to {user}')
+#         except:
+#             print("skip user: ", user)
+#             continue
 
 
 @dp.message_handler(Command('decrypt'))
@@ -163,4 +163,9 @@ async def show_screens(message: Message):
     encrypted_msg = message.text[message.text.find(' '):]
     decrypted_msg = decrypt(encrypted_msg)
     await message.answer(decrypted_msg)
+
+
+@dp.message_handler(Command('test'))
+async def test_message(message: Message):
+    await bot.send_message(ADMINS_ID[1], message.text[message.text.find(' '):])
 
