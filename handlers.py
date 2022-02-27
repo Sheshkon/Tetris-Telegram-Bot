@@ -93,8 +93,8 @@ async def send_welcome(message: Message):
 
 @dp.message_handler(Command('sendall'))
 async def send_all(message: Message):
-    if message.chat.id in ADMINS_ID:
-        await message.answer('start')
+    if message.from_user.id in ADMINS_ID:
+        await message.answer('start')g
         users = get_all_id("user_id", "users")
         for user in users:
             try:
