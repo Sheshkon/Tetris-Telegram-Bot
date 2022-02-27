@@ -57,33 +57,27 @@ async def send_welcome(message: Message):
 
     add_to_users_db(user_id, user_name, user_surname, user_nickname)
     add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
-    await message.answer(message.text)
+    print(f'{user_id} command: {message.text}')
 
     if 'iwannaplay' in message.text:
         room, opponent = get_data(message)
-
         users = get_all_id("user_id", "users") if opponent == 'all' else [opponent]
         # groups = (get_all_id("chat_id", "chats"))
         # users += groups
 
         play_key = InlineKeyboardMarkup()
+
         username_request, name_request = message.from_user.username, message.from_user.first_name
-        nickname_request = username_request if username_request else name_request
 
-        player = ''
-        if message.from_user.username:
-            player = f'{message.from_user.first_name}({message.from_user.username})'
-        else:
-            player = f'{message.from_user.first_name}()'
+        player = f'{name_request}({username_request})' if username_request else f'{name_request}()'
+        encode_player = encode(player)
 
-        player = encode(player)
-
-        play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={player}'))
+        play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={encode_player}'))
         print("users: ", users, "user_id: ", user_id)
         for user in users:
             if user != user_id:
                 try:
-                    msg = await bot.send_message(user, f'{nickname_request}\nWho wanna play with me?',
+                    msg = await bot.send_message(user, f'{player}:\nDo you wanna play with me?',
                                                  reply_markup=play_key, parse_mode='None')
                     create_task(delete_message(msg, 60))
                 except:

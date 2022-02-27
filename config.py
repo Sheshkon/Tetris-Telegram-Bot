@@ -1,5 +1,4 @@
 import os
-
 from dotenv import load_dotenv
 
 
@@ -10,7 +9,6 @@ URL_GAME_SITE = 'https://sheshkon.github.io/tetris-site/'
 ADMINS_ID = (int(os.environ['ADMIN_ID_1']), int(os.environ['ADMIN_ID_2']))
 DB_URI = os.environ['DB_URI']
 PRIVATE_KEY = os.environ['PRIVATE_KEY']
-PUBLIC_KEY = os.environ['PUBLIC_KEY']
 START_TEXT = "Hi!\nI'm Tetris Bot!\nUse /help command to see list of commands."
 
 RULES_TEXT = '<b>Goals</b>\n\n' \

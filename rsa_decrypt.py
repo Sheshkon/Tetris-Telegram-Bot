@@ -1,7 +1,7 @@
 import base64
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
-from config import PRIVATE_KEY, PUBLIC_KEY
+from config import PRIVATE_KEY
 
 
 def decrypt(encrypted_data: str):
@@ -22,6 +22,6 @@ def encode(data: str):
     new_data = data.encode('utf-8')
     base64_bytes = base64.b64encode(new_data)
     base64_message = base64_bytes.decode('utf-8')
-    print(base64_message)
+    print(f'encode {data} -> {base64_message}')
 
     return base64_message
