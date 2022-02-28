@@ -48,7 +48,7 @@ def get_data(msg: Message):
     return room, opponent_id
 
 
-def send_game_request(msg: Message, sender_id, sender_name, sender_username):
+async def send_game_request(msg: Message, sender_id, sender_name, sender_username):
     room, opponent = get_data(msg)
     users = get_all_id("user_id", "users") if opponent == 'all' else [opponent]
     # groups = (get_all_id("chat_id", "chats"))
@@ -87,7 +87,7 @@ async def send_welcome(message: Message):
     print(f'{user_id, user_name, user_surname, user_nickname} command: {message.text}')
 
     if 'iwannaplay' in message.text:
-        send_game_request(message, user_id, user_name, user_nickname)
+        await send_game_request(message, user_id, user_name, user_nickname)
 
     else:
         await message.answer(START_TEXT)
