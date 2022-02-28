@@ -25,6 +25,7 @@ async def delete_message(message: Message, sleep_time: int = 0):
 @dp.message_handler(Command('site'))
 async def show(message: Message):
     await message.answer(text='In this site you can download the game', reply_markup=open_key)
+    print(f'{message.from_user.id} command: {message.text}')
 
 
 def get_user_info(msg: Message):
@@ -127,9 +128,11 @@ async def show_rules(message: Message):
         'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/main/screenshots/image_2021-09-12_11-25-36.png')
     print(f'{message.from_user.id} command: {message.text}')
 
+
 @dp.message_handler(Command('about'))
 async def show_rules(message: Message):
     await message.answer(ABOUT_TEXT, parse_mode='HTML')
+    print(f'{message.from_user.id} command: {message.text}')
 
 
 @dp.message_handler(Command('getall'))
