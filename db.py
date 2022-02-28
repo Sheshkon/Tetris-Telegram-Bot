@@ -67,3 +67,12 @@ def get_chat_db_id(chat_id):
     cursor.execute(f'SELECT chat_db_id FROM chats WHERE chat_id = {chat_id}')
     result = cursor.fetchone()
     return result[0]
+
+
+def get_leaderboard():
+    cursor.execute(f'SELECT * FROM leaderboard ORDER BY score DESC')
+    result = cursor.fetchall()
+    leaderboard = (f'{i + 1}:\nnickname: {data[0].rstrip()}\nscore:{data[1]}\n' \
+                   f'date: {data[2].rstrip()}\nplay time: {data[3].rstrip()}'
+                   for i, data in enumerate(result))
+    return leaderboard

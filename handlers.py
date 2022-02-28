@@ -7,7 +7,7 @@ from keyboards import open_key
 from exel import create_exel, delete_file
 from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE
-from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id
+from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard
 from rsa_decrypt import decrypt, encode
 
 
@@ -65,9 +65,9 @@ async def send_game_request(msg: Message, sender_id, sender_name, sender_usernam
     for user in users:
         if user != sender_id:
             try:
-                msg = await bot.send_message(user, f'{player}:\nDo you wanna play with me?',
-                                             reply_markup=play_key, parse_mode='None')
-                create_task(delete_message(msg, 120))
+                request_msg = await bot.send_message(user, f'{player}:\nDo you wanna play with me?',
+                                                     reply_markup=play_key, parse_mode='None')
+                create_task(delete_message(request_msg, 120))
                 print(f'request was sent to {user}')
             except:
                 print("skip user: ", user)
@@ -181,3 +181,9 @@ async def test_message(message: Message):
     await bot.send_message(ADMINS_ID[1], message.text[message.text.find(' '):])
     print(f'{message.from_user.id} command: {message.text}')
 
+
+@dp.message_handler(Command('leaderboard'))
+async def show_screens(message: Message):
+    leaderboard = get_leaderboard()
+    for game in leaderboard:
+        await message.answer(game)
