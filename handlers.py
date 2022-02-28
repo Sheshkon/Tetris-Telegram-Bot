@@ -48,6 +48,35 @@ def get_data(msg: Message):
     return room, opponent_id
 
 
+def send_game_request(msg: Message, sender_id, sender_name, sender_username):
+    room, opponent = get_data(msg)
+    users = get_all_id("user_id", "users") if opponent == 'all' else [opponent]
+    # groups = (get_all_id("chat_id", "chats"))
+    # users += groups
+
+    play_key = InlineKeyboardMarkup()
+
+    player = f'{sender_name}({sender_username})' if sender_username else f'{sender_name}()'
+    encode_player = encode(player)
+
+    play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={encode_player}'))
+    print("users: ", users, "user_id: ", sender_id)
+    for user in users:
+        if user != sender_id:
+            try:
+                msg = await bot.send_message(user, f'{player}:\nDo you wanna play with me?',
+                                             reply_markup=play_key, parse_mode='None')
+                create_task(delete_message(msg, 120))
+                print(f'request was sent to {user}')
+            except:
+                print("skip user: ", user)
+                continue
+
+    await msg.answer('request was sent')
+
+    pass
+
+
 @dp.message_handler(Command('start'))
 async def send_welcome(message: Message):
     user_id, user_name, user_surname, user_nickname = get_user_info(message)
@@ -58,32 +87,7 @@ async def send_welcome(message: Message):
     print(f'{user_id, user_name, user_surname, user_nickname} command: {message.text}')
 
     if 'iwannaplay' in message.text:
-        room, opponent = get_data(message)
-        users = get_all_id("user_id", "users") if opponent == 'all' else [opponent]
-        # groups = (get_all_id("chat_id", "chats"))
-        # users += groups
-
-        play_key = InlineKeyboardMarkup()
-
-        username_request, name_request = message.from_user.username, message.from_user.first_name
-
-        player = f'{name_request}({username_request})' if username_request else f'{name_request}()'
-        encode_player = encode(player)
-
-        play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={encode_player}'))
-        print("users: ", users, "user_id: ", user_id)
-        for user in users:
-            if user != user_id:
-                try:
-                    msg = await bot.send_message(user, f'{player}:\nDo you wanna play with me?',
-                                                 reply_markup=play_key, parse_mode='None')
-                    create_task(delete_message(msg, 60))
-                    print(f'request was sent to {user}')
-                except:
-                    print("skip user: ", user)
-                    continue
-
-        await message.answer('request was sent')
+        send_game_request(message, user_id, user_name, user_nickname)
 
     else:
         await message.answer(START_TEXT)
@@ -113,6 +117,7 @@ async def send_all(message: Message):
 @dp.message_handler(Command('help'))
 async def show_help(message: Message):
     await message.answer(HELP_TEXT)
+    print(f'{message.from_user.id} command: {message.text}')
 
 
 @dp.message_handler(Command('rules'))
@@ -120,7 +125,7 @@ async def show_rules(message: Message):
     await message.answer(RULES_TEXT, parse_mode='HTML')
     await message.answer_photo(
         'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/main/screenshots/image_2021-09-12_11-25-36.png')
-
+    print(f'{message.from_user.id} command: {message.text}')
 
 @dp.message_handler(Command('about'))
 async def show_rules(message: Message):
@@ -141,6 +146,7 @@ async def show_all_users(message: Message):
 async def show_screens(message: Message):
     for screenshot in SCREENSHOTS_LINKS:
         await message.answer_photo(screenshot)
+        print(f'{message.from_user.id} command: {message.text}')
 
 
 # @dp.message_handler(
@@ -160,6 +166,7 @@ async def show_screens(message: Message):
 
 @dp.message_handler(Command('decrypt'))
 async def show_screens(message: Message):
+    print(f'{message.from_user.id} command: {message.text}')
     encrypted_msg = message.text[message.text.find(' '):]
     decrypted_msg = decrypt(encrypted_msg)
     await message.answer(decrypted_msg)
@@ -168,4 +175,5 @@ async def show_screens(message: Message):
 @dp.message_handler(Command('test'))
 async def test_message(message: Message):
     await bot.send_message(ADMINS_ID[1], message.text[message.text.find(' '):])
+    print(f'{message.from_user.id} command: {message.text}')
 
