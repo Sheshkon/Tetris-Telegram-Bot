@@ -142,7 +142,7 @@ async def show_all_users(message: Message):
         chats = get_all_users('chats')
         file_path = create_exel(users, chats)
         await message.answer_document(open(file_path, "rb"))
-        print(f'{message.from_user.id}: get all users')
+        print(f'{message.from_user.id} command: {message.text}')
         delete_file(file_path)
 
 
