@@ -150,7 +150,7 @@ async def show_all_users(message: Message):
 async def show_screens(message: Message):
     for screenshot in SCREENSHOTS_LINKS:
         await message.answer_photo(screenshot)
-        print(f'{message.from_user.id} command: {message.text}')
+    print(f'{message.from_user.id} command: {message.text}')
 
 
 # @dp.message_handler(
