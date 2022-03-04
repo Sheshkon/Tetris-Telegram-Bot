@@ -24,7 +24,7 @@ async def delete_message(message: Message, sleep_time: int = 0):
 
 @dp.message_handler(Command('site'))
 async def show(message: Message):
-    await message.answer(text='In this site you can download the game', reply_markup=open_key)
+    await message.answer(text='On this website you can download the game', reply_markup=open_key)
     print(f'{message.from_user.id} command: {message.text}')
 
 
