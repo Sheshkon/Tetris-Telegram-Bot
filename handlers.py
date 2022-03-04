@@ -1,6 +1,6 @@
 from asyncio import sleep, create_task
 from contextlib import suppress
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from aiogram.dispatcher.filters import Command
 from aiogram.utils.exceptions import MessageCantBeDeleted, MessageToDeleteNotFound
 from keyboards import open_key

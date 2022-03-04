@@ -73,6 +73,6 @@ def get_leaderboard():
     cursor.execute(f'SELECT * FROM leaderboard ORDER BY score DESC')
     result = cursor.fetchall()
     leaderboard = (f'{i + 1}:\nnickname: {data[0].rstrip()}\nscore:{data[1]}\n' \
-                   f'date: {data[2].rstrip()}\nplay time: {data[3].rstrip()}'
+                   f'lvl: {data[2]}\ndate: {data[3].rstrip()}'
                    for i, data in enumerate(result))
     return leaderboard
