@@ -41,6 +41,7 @@ HELP_TEXT = '<b>List of commands:</b>\n' \
             '/start - start bot\n' \
             '/help - show list of commands\n' \
             '/site - site link\n' \
+            '/leaderboard - leaders scores\n' \
             '/rules - show rules of the game\n' \
             '/about - show authors\n' \
             '/screenshots - show gameplay screenshots\n' \
