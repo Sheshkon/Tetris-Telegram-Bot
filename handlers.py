@@ -9,12 +9,13 @@ from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE, LOG_ID
 from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard
 from rsa_decrypt import decrypt, encode
+from logger import save_log
 
 
 async def restart_server(dp):
     for admin in ADMINS_ID:
         msg = await bot.send_message(admin, text='Restart server &#127758;')
-    await log(msg=msg)
+    await save_log(msg=msg)
 
 
 async def delete_message(message: Message, sleep_time: int = 0):
@@ -26,7 +27,7 @@ async def delete_message(message: Message, sleep_time: int = 0):
 @dp.message_handler(Command('site'))
 async def show(message: Message):
     await message.answer(text='On this website you can download the game', reply_markup=open_key)
-    await log(msg=message)
+    await save_log(msg=message)
 
 
 def get_user_info(msg: Message):
@@ -62,7 +63,7 @@ async def send_game_request(msg: Message, sender_id, sender_name, sender_usernam
     encode_player = encode(player)
 
     play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={encode_player}'))
-    await log(text=f'users: {users}, sender_id: {sender_id}')
+    await save_log(text=f'users: {users}, sender_id: {sender_id}')
 
     for user in users:
         if user != sender_id:
@@ -70,9 +71,9 @@ async def send_game_request(msg: Message, sender_id, sender_name, sender_usernam
                 request_msg = await bot.send_message(user, f'{player}:\nDo you wanna play with me?',
                                                      reply_markup=play_key, parse_mode='None')
                 create_task(delete_message(request_msg, 120))
-                await log(text=f'request was sent to {user}')
+                await save_log(text=f'request was sent to {user}')
             except:
-                await log(text=f'skip user: {user}')
+                await save_log(text=f'skip user: {user}')
                 continue
 
     await msg.answer('request was sent')
@@ -83,9 +84,9 @@ async def send_welcome(message: Message):
     user_id, user_name, user_surname, user_nickname = get_user_info(message)
     chat_id, chat_name, chat_surname, chat_nickname, chat_full_name = get_chat_info(message)
 
-    add_to_users_db(user_id, user_name, user_surname, user_nickname)
-    add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
-    await log(msg=message)
+    await add_to_users_db(user_id, user_name, user_surname, user_nickname)
+    await add_to_chats_db(chat_id, chat_name, chat_surname, chat_nickname, chat_full_name)
+    await save_log(msg=message)
 
     if 'iwannaplay' in message.text:
         await send_game_request(message, user_id, user_name, user_nickname)
@@ -100,13 +101,13 @@ async def send_all(message: Message):
     if message.from_user.id in ADMINS_ID:
         await message.answer('start')
         users = get_all_id("user_id", "users")
-        await log(msg=message)
+        await save_log(msg=message)
         for user in users:
             try:
                 await bot.send_message(user, message.text[message.text.find(' '):])
-                await log(f'message was sent to {user}')
+                await save_log(f'message was sent to {user}')
             except:
-                await log("skip user: ", user)
+                await save_log("skip user: ", user)
                 continue
 
         await message.answer('done')
@@ -118,7 +119,7 @@ async def send_all(message: Message):
 @dp.message_handler(Command('help'))
 async def show_help(message: Message):
     await message.answer(HELP_TEXT)
-    await log(msg=message)
+    await save_log(msg=message)
 
 
 @dp.message_handler(Command('rules'))
@@ -126,13 +127,13 @@ async def show_rules(message: Message):
     await message.answer(RULES_TEXT, parse_mode='HTML')
     await message.answer_photo(
         'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/main/screenshots/image_2021-09-12_11-25-36.png')
-    await log(msg=message)
+    await save_log(msg=message)
 
 
 @dp.message_handler(Command('about'))
 async def show_rules(message: Message):
     await message.answer(ABOUT_TEXT, parse_mode='HTML')
-    await log(msg=message)
+    await save_log(msg=message)
 
 
 @dp.message_handler(Command('getall'))
@@ -142,7 +143,7 @@ async def show_all_users(message: Message):
         chats = get_all_users('chats')
         file_path = create_exel(users, chats)
         await message.answer_document(open(file_path, "rb"))
-        await log(msg=message)
+        await save_log(msg=message)
         delete_file(file_path)
 
 
@@ -150,7 +151,7 @@ async def show_all_users(message: Message):
 async def show_screens(message: Message):
     for screenshot in SCREENSHOTS_LINKS:
         await message.answer_photo(screenshot)
-    await log(msg=message)
+    await save_log(msg=message)
 
 
 # @dp.message_handler(
@@ -170,7 +171,7 @@ async def show_screens(message: Message):
 
 @dp.message_handler(Command('decrypt'))
 async def show_screens(message: Message):
-    await log(msg=message)
+    await save_log(msg=message)
     encrypted_msg = message.text[message.text.find(' '):]
     decrypted_msg = decrypt(encrypted_msg)
     await message.answer(decrypted_msg)
@@ -179,7 +180,7 @@ async def show_screens(message: Message):
 @dp.message_handler(Command('test'))
 async def test_message(message: Message):
     await bot.send_message(ADMINS_ID[1], message.text[message.text.find(' '):])
-    await log(msg=message)
+    await save_log(msg=message)
 
 
 @dp.message_handler(Command('leaderboard'))
@@ -187,15 +188,7 @@ async def show_screens(message: Message):
     leaderboard = get_leaderboard()
     for game in leaderboard:
         await message.answer(game)
-    await log(msg=message)
+    await save_log(msg=message)
 
 
-async def log(text: str = None, msg: Message = None):
-    if msg:
-        log_txt = f'[{msg.from_user.id, msg.from_user.username, msg.from_user.first_name}]'\
-              f'\n command: {msg.text}'
-    else:
-        log_txt = text
 
-    print(log_txt)
-    await bot.send_message(LOG_ID, log_txt)

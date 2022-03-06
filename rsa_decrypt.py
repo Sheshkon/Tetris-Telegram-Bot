@@ -5,7 +5,6 @@ from config import PRIVATE_KEY
 
 
 def decrypt(encrypted_data: str):
-    decrypted_text = ''
     try:
         key = RSA.importKey(PRIVATE_KEY)
         key = PKCS1_OAEP.new(key)
