@@ -1,6 +1,7 @@
 import psycopg2
 from config import DB_URI
 from logger import save_log
+from main import bot
 
 conn = psycopg2.connect(DB_URI, sslmode='require')
 cursor = conn.cursor()
@@ -71,9 +72,50 @@ def get_chat_db_id(chat_id):
 
 
 def get_leaderboard():
-    cursor.execute(f'SELECT * FROM leaderboard ORDER BY score DESC')
+    cursor.execute(f'SELECT * FROM leaderboard ORDER BY score DESC LIMIT 3')
     result = cursor.fetchall()
-    leaderboard = (f'{i + 1}:\nnickname: {data[0].rstrip()}\nscore:{data[1]}\n' \
+    leaderboard = [f'{i + 1}:\nnickname: {data[0].rstrip()}\nscore:{data[1]}\n' \
                    f'lvl: {data[2]}\ndate: {data[3].rstrip()}'
-                   for i, data in enumerate(result))
+                   for i, data in enumerate(result)]
+    leaderboard.append('\nfull leaderboard you can find on website (use /site)')
     return leaderboard
+
+
+async def add_to_leaderboard(user_id, nickname, data):
+    await save_log(text=data)
+    if not await valid_score(data):
+        await save_log(text=f'{user_id, nickname}: invalid score')
+        return
+
+    cursor.execute(f'SELECT * FROM leaderboard WHERE id={user_id} AND score={data[0]}')
+    result = cursor.fetchone()
+    if result:
+        await bot.send_message(user_id, 'score is already recorded')
+        await save_log(text=f'{user_id, nickname}: score is already recorded')
+        return
+
+    cursor.execute(
+        'INSERT INTO leaderboard (nickname, score, lvl, game_date, id) VALUES (%s, %s, %s, %s, %s)',
+        (nickname, int(data[0]), int(data[1]), data[2], user_id))
+    conn.commit()
+    await bot.send_message(user_id, f'dded to leaderboard {nickname, data[0], data[1], data[2]}')
+    await save_log(text=f'added to leaderboard [{nickname}: {data}]')
+
+
+async def valid_score(score):
+    if len(score) != 3:
+        await save_log(text='invalid length')
+
+        return False
+
+    if not (score[0].isdigit() and score[1].isdigit()):
+        await save_log(text='invalid symbol in score or lvl')
+        return False
+
+    date = score[2].split('/')
+    for number in date:
+        if not (number.isdigit()):
+            await save_log(text='invalid symbol in date')
+            return False
+
+    return True

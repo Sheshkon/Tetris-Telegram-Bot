@@ -7,8 +7,8 @@ from keyboards import open_key
 from exel import create_exel, delete_file
 from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE, LOG_ID
-from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard
-from rsa_decrypt import decrypt, encode
+from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard, add_to_leaderboard
+from rsa_decrypt import decrypt, encode, decode
 from logger import save_log
 
 
@@ -60,7 +60,7 @@ async def send_game_request(msg: Message, sender_id, sender_name, sender_usernam
     play_key = InlineKeyboardMarkup()
 
     player = f'{sender_name}({sender_username})' if sender_username else f'{sender_name}()'
-    encode_player = encode(player)
+    encode_player = await encode(player)
 
     play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={encode_player}'))
     await save_log(text=f'users: {users}, sender_id: {sender_id}')
@@ -189,6 +189,21 @@ async def show_screens(message: Message):
     for game in leaderboard:
         await message.answer(game)
     await save_log(msg=message)
+
+
+@dp.message_handler(Command('add_score'))
+async def add_score(message: Message):
+    try:
+        await save_log(msg=message)
+        encrypted_msg = message.text[message.text.find(' '):]
+        # decrypted_msg = decrypt(encrypted_msg)
+        decrypted_msg = decode(encrypted_msg)
+        await save_log(text=f'decode string: {decrypted_msg}')
+        nickname = f'@{message.from_user.username}' if message.from_user.username else message.from_user.first_name
+        await add_to_leaderboard(message.from_user.id, nickname, decrypted_msg.split())
+    except:
+        await save_log(text=f'add_score error, command: {message.text}')
+        await message.answer('invalid score')
 
 
 

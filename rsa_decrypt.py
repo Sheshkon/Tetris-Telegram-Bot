@@ -2,6 +2,7 @@ import base64
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from config import PRIVATE_KEY
+from logger import save_log
 
 
 def decrypt(encrypted_data: str):
@@ -13,14 +14,16 @@ def decrypt(encrypted_data: str):
     except:
         decrypted_text = 'decryption error'
 
-    print(decrypted_text)
     return decrypted_text
 
 
-def encode(data: str):
+async def encode(data: str):
     new_data = data.encode('utf-8')
     base64_bytes = base64.b64encode(new_data)
     base64_message = base64_bytes.decode('utf-8')
-    print(f'encode {data} -> {base64_message}')
+    await save_log(f'encode {data} -> {base64_message}')
 
-    return base64_message
+
+def decode(data: str):
+    base64_message = base64.b64decode(data)
+    return base64_message.decode('utf-8')
