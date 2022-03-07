@@ -84,7 +84,6 @@ async def send_game_request(msg: Message, sender_id, sender_name, sender_usernam
 
 @dp.message_handler(Command('start'))
 async def send_welcome(message: Message):
-    await types.ChatActions.typing()
     user_id, user_name, user_surname, user_nickname = get_user_info(message)
     chat_id, chat_name, chat_surname, chat_nickname, chat_full_name = get_chat_info(message)
 
