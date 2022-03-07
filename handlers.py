@@ -247,7 +247,7 @@ async def send_update(message: Message):
             await save_log(text="no update file")
 
         users = get_all_id("user_id", "users")
-        for user in (ADMINS_ID[0], 84987987, ADMINS_ID[1]):
+        for user in users:
             try:
                 await bot.send_photo(user, photo=open('latest_version/update.png', 'rb'), caption=update_text)
                 await save_log(text=f'update was sent to {user}')
