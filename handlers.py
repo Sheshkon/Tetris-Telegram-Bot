@@ -147,11 +147,11 @@ async def show_rules(message: Message):
 
 @dp.message_handler(Command('get_all'))
 async def show_all_users(message: Message):
-    await types.ChatActions.UPLOAD_DOCUMENT()
     if message.from_user.id in ADMINS_ID:
         users = get_all_users('users')
         chats = get_all_users('chats')
         file_path = create_exel(users, chats)
+        await types.ChatActions.UPLOAD_DOCUMENT()
         await message.answer_document(open(file_path, "rb"))
         await save_log(msg=message)
         delete_file(file_path)
