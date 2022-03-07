@@ -1,5 +1,7 @@
 from asyncio import sleep, create_task
 from contextlib import suppress
+
+from aiogram import types
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from aiogram.dispatcher.filters import Command
 from aiogram.utils.exceptions import MessageCantBeDeleted, MessageToDeleteNotFound
@@ -10,6 +12,7 @@ from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCR
 from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard, add_to_leaderboard
 from rsa_decrypt import decrypt, encode, decode
 from logger import save_log
+import os
 
 
 async def restart_server(dp):
@@ -26,6 +29,7 @@ async def delete_message(message: Message, sleep_time: int = 0):
 
 @dp.message_handler(Command('site'))
 async def show(message: Message):
+    await types.ChatActions.typing()
     await message.answer(text='On this website you can download the game', reply_markup=open_key)
     await save_log(msg=message)
 
@@ -81,6 +85,7 @@ async def send_game_request(msg: Message, sender_id, sender_name, sender_usernam
 
 @dp.message_handler(Command('start'))
 async def send_welcome(message: Message):
+    await types.ChatActions.typing()
     user_id, user_name, user_surname, user_nickname = get_user_info(message)
     chat_id, chat_name, chat_surname, chat_nickname, chat_full_name = get_chat_info(message)
 
@@ -96,8 +101,9 @@ async def send_welcome(message: Message):
             animation='https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif')
 
 
-@dp.message_handler(Command('sendall'))
+@dp.message_handler(Command('send_all'))
 async def send_all(message: Message):
+    await types.ChatActions.typing()
     if message.from_user.id in ADMINS_ID:
         await message.answer('start')
         users = get_all_id("user_id", "users")
@@ -118,12 +124,14 @@ async def send_all(message: Message):
 
 @dp.message_handler(Command('help'))
 async def show_help(message: Message):
+    await types.ChatActions.typing()
     await message.answer(HELP_TEXT)
     await save_log(msg=message)
 
 
 @dp.message_handler(Command('rules'))
 async def show_rules(message: Message):
+    await types.ChatActions.typing()
     await message.answer(RULES_TEXT, parse_mode='HTML')
     await message.answer_photo(
         'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/main/screenshots/image_2021-09-12_11-25-36.png')
@@ -132,12 +140,14 @@ async def show_rules(message: Message):
 
 @dp.message_handler(Command('about'))
 async def show_rules(message: Message):
+    await types.ChatActions.typing()
     await message.answer(ABOUT_TEXT, parse_mode='HTML')
     await save_log(msg=message)
 
 
-@dp.message_handler(Command('getall'))
+@dp.message_handler(Command('get_all'))
 async def show_all_users(message: Message):
+    await types.ChatActions.UPLOAD_DOCUMENT()
     if message.from_user.id in ADMINS_ID:
         users = get_all_users('users')
         chats = get_all_users('chats')
@@ -149,8 +159,11 @@ async def show_all_users(message: Message):
 
 @dp.message_handler(Command('screenshots'))
 async def show_screens(message: Message):
+    await types.ChatActions.upload_photo()
+    media = types.MediaGroup()
     for screenshot in SCREENSHOTS_LINKS:
-        await message.answer_photo(screenshot)
+        media.attach_photo(screenshot)
+    await message.answer_media_group(media)
     await save_log(msg=message)
 
 
@@ -170,7 +183,8 @@ async def show_screens(message: Message):
 
 
 @dp.message_handler(Command('decrypt'))
-async def show_screens(message: Message):
+async def decrypt_message(message: Message):
+    await types.ChatActions.typing()
     await save_log(msg=message)
     encrypted_msg = message.text[message.text.find(' '):]
     decrypted_msg = decrypt(encrypted_msg)
@@ -184,9 +198,10 @@ async def test_message(message: Message):
 
 
 @dp.message_handler(Command('leaderboard'))
-async def show_screens(message: Message):
+async def show_leaderboard(message: Message):
     leaderboard = get_leaderboard()
     for game in leaderboard:
+        await types.ChatActions.typing()
         await message.answer(game)
     await save_log(msg=message)
 
@@ -204,6 +219,20 @@ async def add_score(message: Message):
     except:
         await save_log(text=f'add_score error, command: {message.text}')
         await message.answer('invalid score')
+
+
+@dp.message_handler(Command('get_latest_update'))
+async def get_latest_update(message: Message):
+    await types.ChatActions.typing()
+    try:
+        with open('latest_version/update.txt', encoding='utf8') as f:
+            update_text = f.read()
+            await message.answer_photo(photo=open('latest_version/update.png', 'rb'), caption=update_text)
+    except:
+        await save_log(msg=message)
+        await save_log(text='get latest update error')
+    else:
+        await save_log(msg=message)
 
 
 

@@ -77,6 +77,7 @@ def get_leaderboard():
     leaderboard = [f'{i + 1}:\nnickname: {data[0].rstrip()}\nscore:{data[1]}\n' \
                    f'lvl: {data[2]}\ndate: {data[3].rstrip()}'
                    for i, data in enumerate(result)]
+
     leaderboard.append('\nfull leaderboard you can find on website (use /site)')
     return leaderboard
 

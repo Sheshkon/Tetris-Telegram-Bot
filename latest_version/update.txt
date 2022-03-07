@@ -1,0 +1,11 @@
+<b>Tetris v0.2.2-beta(2022/03/07) 🎮 </b>
+<b>Tetris Update!</b>
+<i>– the ability to publish best score.</i>
+  <code>just send suggestion text to Tetris_bot </code>
+
+<b>Telegram Bot Update!</b>
+<i>– the ability to add/show best scores</i>
+  <code>you can find your best score on Website or in Tetris_bot</code>
+
+<i>– fixed some bugs.</i>
+  <a href="https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/out/artifacts/Tetris_Multiplayer_jar/installer/tetrisSetup.exe">📌Download Update</a>📌

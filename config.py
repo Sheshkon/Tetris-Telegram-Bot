@@ -41,13 +41,14 @@ RULES_TEXT = '<b>Goals</b>\n\n' \
 HELP_TEXT = '<b>List of commands:</b>\n' \
             '/start - start bot\n' \
             '/help - show list of commands\n' \
+            '/get_latest_update - latest version of the game' \
             '/site - site link\n' \
             '/leaderboard - leaders scores\n' \
             '/rules - show rules of the game\n' \
             '/about - show authors\n' \
             '/screenshots - show gameplay screenshots\n' \
             '<i>Admin commands:</i>\n' \
-            '<i>/sendall - send text message for all users</i>'
+            '<i>/send_all - send text message for all users</i>'
 
 ABOUT_TEXT = "It is a bot for multiplayer tetris game created by <a " \
              "href='https://github.com/vitaliysheshkoff/Tetris-Multiplayer'><span class='tg-spoiler'>Author link</span></a> "
