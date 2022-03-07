@@ -59,9 +59,7 @@ async def send_game_request(msg: Message, sender_id, sender_name, sender_usernam
     users = get_all_id("user_id", "users") if opponent == 'all' else [opponent]
     # groups = (get_all_id("chat_id", "chats"))
     # users += groups
-
     play_key = InlineKeyboardMarkup()
-
     player = f'{sender_name}({sender_username})' if sender_username else f'{sender_name}()'
     encode_player = await encode(player)
 

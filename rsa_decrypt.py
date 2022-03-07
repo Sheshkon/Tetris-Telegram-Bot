@@ -22,6 +22,7 @@ async def encode(data: str):
     base64_bytes = base64.b64encode(new_data)
     base64_message = base64_bytes.decode('utf-8')
     await save_log(f'encode {data} -> {base64_message}')
+    return base64_message
 
 
 def decode(data: str):
