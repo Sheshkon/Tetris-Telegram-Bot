@@ -12,7 +12,6 @@ from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCR
 from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard, add_to_leaderboard
 from rsa_decrypt import decrypt, encode, decode
 from logger import save_log
-import os
 
 
 async def restart_server(dp):
@@ -110,10 +109,11 @@ async def send_all(message: Message):
         await save_log(msg=message)
         for user in users:
             try:
+                await types.ChatActions.typing()
                 await bot.send_message(user, message.text[message.text.find(' '):])
-                await save_log(f'message was sent to {user}')
+                await save_log(text=f'message was sent to {user}')
             except:
-                await save_log("skip user: ", user)
+                await save_log(text=f'skip user: {user}')
                 continue
 
         await message.answer('done')
@@ -223,16 +223,34 @@ async def add_score(message: Message):
 
 @dp.message_handler(Command('get_latest_update'))
 async def get_latest_update(message: Message):
+    await save_log(msg=message)
     await types.ChatActions.typing()
     try:
         with open('latest_version/update.txt', encoding='utf8') as f:
             update_text = f.read()
-            await message.answer_photo(photo=open('latest_version/update.png', 'rb'), caption=update_text)
+        await message.answer_photo(photo=open('latest_version/update.png', 'rb'), caption=update_text)
     except:
-        await save_log(msg=message)
         await save_log(text='get latest update error')
-    else:
-        await save_log(msg=message)
 
 
+@dp.message_handler(Command('send_update'))
+async def send_update(message: Message):
+    await save_log(msg=message)
+    await types.ChatActions.typing()
 
+    if message.from_user.id in ADMINS_ID:
+        try:
+            with open('latest_version/update.txt', encoding='utf8') as f:
+                update_text = f.read()
+        except:
+            await message.answer("no update file")
+            await save_log(text="no update file")
+
+        users = get_all_id("user_id", "users")
+        for user in (ADMINS_ID[0], 84987987, ADMINS_ID[1]):
+            try:
+                await bot.send_photo(user, photo=open('latest_version/update.png', 'rb'), caption=update_text)
+                await save_log(text=f'update was sent to {user}')
+            except:
+                await save_log(text=f'skip user: {user}')
+                continue

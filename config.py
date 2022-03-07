@@ -48,7 +48,8 @@ HELP_TEXT = '<b>List of commands:</b>\n' \
             '/about - show authors\n' \
             '/screenshots - show gameplay screenshots\n' \
             '<i>Admin commands:</i>\n' \
-            '<i>/send_all - send text message for all users</i>'
+            '<i>/send_all - send text message for all users</i>\n' \
+            '<i>/send_update - send new update to all users</i>'
 
 ABOUT_TEXT = "It is a bot for multiplayer tetris game created by <a " \
              "href='https://github.com/vitaliysheshkoff/Tetris-Multiplayer'><span class='tg-spoiler'>Author link</span></a> "
