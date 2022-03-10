@@ -99,7 +99,7 @@ async def add_to_leaderboard(user_id, nickname, data):
         'INSERT INTO leaderboard (nickname, score, lvl, game_date, id) VALUES (%s, %s, %s, %s, %s)',
         (nickname, int(data[0]), int(data[1]), data[2], user_id))
     conn.commit()
-    await bot.send_message(user_id, f'dded to leaderboard {nickname, data[0], data[1], data[2]}')
+    await bot.send_message(user_id, f'added to leaderboard {nickname, data[0], data[1], data[2]}')
     await save_log(text=f'added to leaderboard [{nickname}: {data}]')
 
 
