@@ -244,10 +244,35 @@ async def send_update(message: Message):
             await save_log(text="no update file")
 
         users = get_all_id("user_id", "users")
+        update_message = await bot.send_photo(message.from_user.id, photo=open('latest_version/update.png', 'rb'), caption=update_text)
         for user in users:
             try:
-                await bot.send_photo(user, photo=open('latest_version/update.png', 'rb'), caption=update_text)
+                await update_message.send_copy(user)
                 await save_log(text=f'update was sent to {user}')
+            except:
+                await save_log(text=f'skip user: {user}')
+                continue
+
+
+@dp.message_handler(Command('send_tip'))
+async def send_tip(message: Message):
+    await save_log(msg=message)
+    await types.ChatActions.typing()
+
+    if message.from_user.id in ADMINS_ID:
+        try:
+            with open('tips/txt/tip1.txt', encoding='utf8') as f:
+                tip_text = f.read()
+        except:
+            await message.answer("no tips")
+            await save_log(text="no tips")
+
+        tip_message = await bot.send_photo(message.from_user.id, photo=open('tips/img/tip1.png', 'rb'), caption=tip_text)
+        users = get_all_id("user_id", "users")
+        for user in users:
+            try:
+                await tip_message.send_copy(user)
+                await save_log(text=f'tip was sent to {user}')
             except:
                 await save_log(text=f'skip user: {user}')
                 continue
