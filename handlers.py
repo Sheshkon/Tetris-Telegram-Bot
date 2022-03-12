@@ -4,7 +4,7 @@ from contextlib import suppress
 from aiogram import types
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from aiogram.dispatcher.filters import Command
-from aiogram.utils.exceptions import MessageCantBeDeleted, MessageToDeleteNotFound
+from aiogram.utils import exceptions
 from keyboards import open_key
 from exel import create_exel, delete_file
 from main import bot, dp
@@ -22,7 +22,7 @@ async def restart_server(dp):
 
 async def delete_message(message: Message, sleep_time: int = 0):
     await sleep(sleep_time)
-    with suppress(MessageCantBeDeleted, MessageToDeleteNotFound):
+    with suppress(exceptions.MessageCantBeDeleted, exceptions.MessageToDeleteNotFound):
         await message.delete()
 
 
