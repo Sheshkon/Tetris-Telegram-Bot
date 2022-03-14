@@ -88,11 +88,21 @@ async def add_to_leaderboard(user_id, nickname, data):
         await save_log(text=f'{user_id, nickname}: invalid score')
         return
 
-    cursor.execute(f'SELECT * FROM leaderboard WHERE id={user_id} AND score={data[0]}')
+    cursor.execute(f'SELECT score FROM leaderboard WHERE id={user_id}')
     result = cursor.fetchone()
+
     if result:
-        await bot.send_message(user_id, 'score is already recorded')
-        await save_log(text=f'{user_id, nickname}: score is already recorded')
+        print(result[0], data[0])
+        if result[0] >= int(data[0]):
+            await bot.send_message(user_id, 'your current score is not higher than the previously published one')
+            await save_log(text=f'{user_id, nickname}: your current score is not higher than the previously published one')
+            return
+
+        cursor.execute('UPDATE leaderboard SET nickname=%s, score=%s, lvl=%s, game_date=%s WHERE id=%s',
+                       (nickname, int(data[0]), int(data[1]), data[2], user_id))
+        conn.commit()
+        await bot.send_message(user_id, 'leaderboard updated')
+        await save_log(text=f'{user_id, nickname}: leaderboard updated')
         return
 
     cursor.execute(
@@ -106,7 +116,6 @@ async def add_to_leaderboard(user_id, nickname, data):
 async def valid_score(score):
     if len(score) != 3:
         await save_log(text='invalid length')
-
         return False
 
     if not (score[0].isdigit() and score[1].isdigit()):
