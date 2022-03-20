@@ -1,3 +1,4 @@
+import hashlib
 from asyncio import sleep, create_task
 from contextlib import suppress
 
@@ -9,7 +10,8 @@ from keyboards import open_key
 from exel import create_exel, delete_file
 from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE, LOG_ID
-from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard, add_to_leaderboard
+from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard, \
+    add_to_leaderboard
 from rsa_decrypt import decrypt, encode, decode
 from logger import save_log
 
@@ -26,6 +28,19 @@ async def delete_message(message: Message, sleep_time: int = 0):
         await message.delete()
 
 
+@dp.inline_handler()
+async def inline_handler(inline_query: types.InlineQuery):
+    text = inline_query.query or 'echo'
+    input_content = types.InputTextMessageContent(text)
+    result_id: str = hashlib.md5(text.encode()).hexdigest()
+    item = types.InlineQueryResultArticle(
+        id=result_id,
+        title=f'Result {text!r}',
+        input_message_content=input_content,
+    )
+    await bot.answer_inline_query(inline_query.id, results=[item], cache_time=1)
+
+
 @dp.message_handler(Command('site'))
 async def show(message: Message):
     await types.ChatActions.typing()
@@ -34,7 +49,7 @@ async def show(message: Message):
 
 
 def get_user_info(msg: Message):
-    return msg.from_user.id, msg.from_user.first_name, msg.from_user.last_name, msg.from_user.username
+    return msg.from_user.id, msg.from_user.x, msg.from_user.last_name, msg.from_user.username
 
 
 def get_chat_info(msg: Message):
@@ -244,7 +259,8 @@ async def send_update(message: Message):
             await save_log(text="no update file")
 
         users = get_all_id("user_id", "users")
-        update_message = await bot.send_photo(message.from_user.id, photo=open('latest_version/update.png', 'rb'), caption=update_text)
+        update_message = await bot.send_photo(message.from_user.id, photo=open('latest_version/update.png', 'rb'),
+                                              caption=update_text)
         for user in users:
             try:
                 await update_message.send_copy(user)
@@ -267,7 +283,8 @@ async def send_tip(message: Message):
             await message.answer("no tips")
             await save_log(text="no tips")
 
-        tip_message = await bot.send_photo(message.from_user.id, photo=open('tips/img/tip1.png', 'rb'), caption=tip_text)
+        tip_message = await bot.send_photo(message.from_user.id, photo=open('tips/img/tip1.png', 'rb'),
+                                           caption=tip_text)
         users = get_all_id("user_id", "users")
         for user in users:
             try:
