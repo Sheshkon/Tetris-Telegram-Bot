@@ -268,7 +268,7 @@ async def send_update(message: Message):
         users = get_all_id("user_id", "users")
         update_message = await bot.send_photo(message.from_user.id, photo=open('latest_version/update.png', 'rb'),
                                               caption=update_text)
-        for user in ADMINS_ID:
+        for user in users:
             try:
                 await update_message.send_copy(user)
                 await save_log(text=f'update was sent to {user}')
