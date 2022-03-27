@@ -1,20 +1,9 @@
-<b>Tetris v0.4.2-beta(2022/03/07) 🎮 </b>
-<b>Tetris Update!</b>
-<i>– added pause in the game with bot.</i>
-<i>– fixed a bug that did not allow writing a path with spaces to the registry for the 'telegram mode'.</i>
-<i>- added new tetromino theme, and background image.</i>
+<b>Web Tetris Update!</b>
+<i>– added cleared lines animation</i>
+<i>- added score, lvl, lines
+<i>– fixed swipes control on iPhone.</i>
+<i>- added new tetromino theme, and background.</i>
 <i>– fixed some bugs.</i>
 
-<b>BETA</b>
-<i>– <a href="https://sheshkon.github.io/web_tetris/">web tetris </a>mostly for mobile phones</i>
-    <i>control by swipes:</i>
-        <code>swipe up - rotation</code>
-        <code>swipe left/right/down - move left/right/down</code>
-    <i>or use buttons:</i>
-        <code>left part - moves</code>
-        <code>right part - rotation, hardDrop</code>
-    <i>pc:</i>
-        <code>use arrows and space</code>
 
-
-  <a href="https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/out/artifacts/Tetris_Multiplayer_jar/installer/tetrisSetup.exe">📌Download Update</a>📌
+<i>–https://sheshkon.github.io/web_tetris</i>
