@@ -6,7 +6,7 @@ from aiogram import types
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from aiogram.dispatcher.filters import Command
 from aiogram.utils import exceptions
-from keyboards import open_key
+from keyboards import site_key, web_tetris_key
 from exel import create_exel, delete_file
 from main import bot, dp
 from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE, LOG_ID
@@ -44,7 +44,14 @@ async def inline_handler(inline_query: types.InlineQuery):
 @dp.message_handler(Command('site'))
 async def show(message: Message):
     await types.ChatActions.typing()
-    await message.answer(text='On this website you can download the game', reply_markup=open_key)
+    await message.answer(text='On this website you can download the game', reply_markup=site_key)
+    await save_log(msg=message)
+
+
+@dp.message_handler(Command('web'))
+async def show(message: Message):
+    await types.ChatActions.typing()
+    await message.answer(text='web version of the game', reply_markup=web_tetris_key)
     await save_log(msg=message)
 
 
@@ -293,3 +300,4 @@ async def send_tip(message: Message):
             except:
                 await save_log(text=f'skip user: {user}')
                 continue
+

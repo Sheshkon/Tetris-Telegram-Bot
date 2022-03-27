@@ -6,4 +6,6 @@
 <i>– fixed some bugs.</i>
 
 
-<i>–https://sheshkon.github.io/web_tetris</i>
+<i>https://sheshkon.github.io/web_tetris</i>
+
+<a href="https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/out/artifacts/Tetris_Multiplayer_jar/installer/tetrisSetup.exe">📌Download game</a>📌

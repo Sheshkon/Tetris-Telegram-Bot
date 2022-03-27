@@ -11,6 +11,7 @@ DB_URI = os.environ['DB_URI']
 PRIVATE_KEY = os.environ['PRIVATE_KEY']
 START_TEXT = "Hi!\nI'm Tetris Bot!\nUse /help command to see list of commands."
 LOG_ID = os.environ['LOG_ID']
+URL_WEB_GAME = 'https://sheshkon.github.io/web_tetris'
 
 RULES_TEXT = '<b>Goals</b>\n\n' \
              '   The aim in Tetris is simple; you bring down\n' \
