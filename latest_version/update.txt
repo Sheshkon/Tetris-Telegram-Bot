@@ -1,11 +1,11 @@
 <b>Web Tetris Update!</b>
 <i>– added cleared lines animation</i>
 <i>- added score, lvl, lines
-<i>– fixed swipes control on iPhone.</i>
-<i>- added new tetromino theme, and background.</i>
+<i>– fixed swipes control on iPhone</i>
+<i>- added a new tetromino theme, and background</i>
 <i>– fixed some bugs.</i>
 
-
 <i>https://sheshkon.github.io/web_tetris</i>
+<i>use /web command</i>
 
 <a href="https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/out/artifacts/Tetris_Multiplayer_jar/installer/tetrisSetup.exe">📌Download game</a>📌
