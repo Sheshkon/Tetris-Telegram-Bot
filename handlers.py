@@ -268,13 +268,26 @@ async def send_update(message: Message):
         users = get_all_id("user_id", "users")
         update_message = await bot.send_photo(message.from_user.id, photo=open('latest_version/update.png', 'rb'),
                                               caption=update_text)
-        for user in users:
+        log = ''
+        skipped_users =[
+            1993075630,
+            1109809491,
+            920349008,
+            211822609,
+            903149209,
+        ]
+
+        for user in skipped_users:
             try:
+                log += f'update was sent to {user}\n'
                 await update_message.send_copy(user)
-                await save_log(text=f'update was sent to {user}')
+                # await save_log(text=f'update was sent to {user}')
             except:
-                await save_log(text=f'skip user: {user}')
+                log += f'skip user: {user}\n'
+                # await save_log(text=f'skip user: {user}')
                 continue
+
+        await save_log(text=log)
 
 
 @dp.message_handler(Command('send_tip'))
