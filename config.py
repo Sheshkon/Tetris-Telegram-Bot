@@ -43,6 +43,7 @@ HELP_TEXT = '<b>List of commands:</b>\n' \
             '/start - start bot\n' \
             '/help - show list of commands\n' \
             '/get_latest_update - latest version of the game\n' \
+            '/web - web version\n' \
             '/site - site link\n' \
             '/leaderboard - leaders scores\n' \
             '/rules - show rules of the game\n' \
