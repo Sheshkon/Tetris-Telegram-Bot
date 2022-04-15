@@ -1,8 +1,9 @@
 <b>Web Tetris Update!</b>
-<i>– added cleared lines animation</i>
-<i>- added score, lvl, lines</i>
-<i>– fixed swipes control on iPhone</i>
-<i>- added a new tetromino theme, and background</i>
+<i>– added device rotation</i>
+<i>- added help, music, dark mode buttons </i>
+<i>- optimized game</i>
+<i>- added fullscreen button(only for android) </i>
+<i>– added random background</i>
 <i>– fixed some bugs</i>
 
 <i>https://sheshkon.github.io/web_tetris</i>
