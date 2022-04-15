@@ -10,4 +10,5 @@
 <i>use /web command</i>
 
 <i>suggestions and feedback: https://t.me/sheshkon or use contact us on /site</i>
+
 <a href="https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/resize_network_multiplayer_branch/out/artifacts/Tetris_Multiplayer_jar/installer/tetrisSetup.exe">📌Download game</a>📌
