@@ -1,5 +1,10 @@
 import asyncio
-from aiogram import Bot, Dispatcher, executor
+from uuid import uuid4
+
+from aiogram import Bot, Dispatcher, executor, types
+from aiogram.dispatcher.filters import Command
+from aiogram.types import InlineQueryResultGame
+
 from config import BOT_TOKEN
 
 loop = asyncio.new_event_loop()

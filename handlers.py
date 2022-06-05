@@ -1,9 +1,10 @@
 import hashlib
 from asyncio import sleep, create_task
 from contextlib import suppress
+from uuid import uuid4
 
 from aiogram import types
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InlineQueryResultGame
 from aiogram.dispatcher.filters import Command
 from aiogram.utils import exceptions
 from keyboards import site_key, web_tetris_key
@@ -28,17 +29,33 @@ async def delete_message(message: Message, sleep_time: int = 0):
         await message.delete()
 
 
+# @dp.inline_handler()
+# async def inline_handler(inline_query: types.InlineQuery):
+#     text = inline_query.query or 'echo'
+#     input_content = types.InputTextMessageContent(text)
+#     result_id: str = hashlib.md5(text.encode()).hexdigest()
+#     item = types.InlineQueryResultArticle(
+#         id=result_id,
+#         title=f'Result {text!r}',
+#         input_message_content=input_content,
+#     )
+#     await bot.answer_inline_query(inline_query.id, results=[item], cache_time=1)
+
+
+game_short_name = 'web_tetris'
+
+
+@dp.callback_query_handler(lambda callback_query: \
+        callback_query.game_short_name == game_short_name)
+async def send_welcome(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id, url='https://sheshkon.github.io/web_tetris/')
+
+
 @dp.inline_handler()
-async def inline_handler(inline_query: types.InlineQuery):
-    text = inline_query.query or 'echo'
-    input_content = types.InputTextMessageContent(text)
-    result_id: str = hashlib.md5(text.encode()).hexdigest()
-    item = types.InlineQueryResultArticle(
-        id=result_id,
-        title=f'Result {text!r}',
-        input_message_content=input_content,
-    )
-    await bot.answer_inline_query(inline_query.id, results=[item], cache_time=1)
+async def send_game(inline_query: types.InlineQuery):
+    await bot.answer_inline_query(inline_query.id,
+                                  [InlineQueryResultGame(id=str(uuid4()),
+                                                         game_short_name=game_short_name)])
 
 
 @dp.message_handler(Command('site'))
@@ -306,4 +323,3 @@ async def send_tip(message: Message):
             except:
                 await save_log(text=f'skip user: {user}')
                 continue
-
