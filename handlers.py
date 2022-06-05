@@ -10,7 +10,7 @@ from aiogram.utils import exceptions
 from keyboards import site_key, web_tetris_key
 from exel import create_exel, delete_file
 from main import bot, dp
-from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE, LOG_ID
+from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE, LOG_ID, GAME_URLS, GAME_SHORT_NAMES
 from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard, \
     add_to_leaderboard
 from rsa_decrypt import decrypt, encode, decode
@@ -42,20 +42,20 @@ async def delete_message(message: Message, sleep_time: int = 0):
 #     await bot.answer_inline_query(inline_query.id, results=[item], cache_time=1)
 
 
-game_short_name = 'web_tetris'
-
-
 @dp.callback_query_handler(lambda callback_query: \
-        callback_query.game_short_name == game_short_name)
+        callback_query.game_short_name in GAME_SHORT_NAMES)
 async def send_welcome(callback_query: types.CallbackQuery):
-    await bot.answer_callback_query(callback_query.id, url='https://sheshkon.github.io/web_tetris/')
+    await bot.answer_callback_query(callback_query.id, url=GAME_URLS[GAME_SHORT_NAMES.index(callback_query.game_short_name)])
 
 
 @dp.inline_handler()
 async def send_game(inline_query: types.InlineQuery):
-    await bot.answer_inline_query(inline_query.id,
-                                  [InlineQueryResultGame(id=str(uuid4()),
-                                                         game_short_name=game_short_name)])
+    r = []
+    print('inline_query', inline_query.query)
+    for i, game in enumerate(GAME_SHORT_NAMES):
+        if inline_query.query in game:
+            r.append(InlineQueryResultGame(id=str(uuid4()), game_short_name=GAME_SHORT_NAMES[i]))
+    await bot.answer_inline_query(inline_query.id, r)
 
 
 @dp.message_handler(Command('site'))

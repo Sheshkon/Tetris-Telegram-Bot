@@ -13,6 +13,10 @@ START_TEXT = "Hi!\nI'm Tetris Bot!\nUse /help command to see list of commands."
 LOG_ID = os.environ['LOG_ID']
 URL_WEB_GAME = 'https://sheshkon.github.io/web_tetris'
 
+GAME_SHORT_NAMES = ('web_tetris', 'tic_tac_toe')
+GAME_URLS = ('https://sheshkon.github.io/web_tetris/', 'https://sheshkon.github.io/tic_tac_toe/')
+
+
 RULES_TEXT = '<b>Goals</b>\n\n' \
              '   The aim in Tetris is simple; you bring down\n' \
              'block from the top of the screen. You can \n' \
