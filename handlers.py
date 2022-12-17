@@ -1,60 +1,33 @@
-import hashlib
-from asyncio import sleep, create_task
-from contextlib import suppress
+import os.path
 from uuid import uuid4
 
 from aiogram import types
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InlineQueryResultGame
+from aiogram.types import Message, InlineQueryResultGame
 from aiogram.dispatcher.filters import Command
-from aiogram.utils import exceptions
+
 from keyboards import site_key, web_tetris_key
 from exel import create_exel, delete_file
 from main import bot, dp
-from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, URL_GAME_SITE, LOG_ID, GAME_URLS, GAME_SHORT_NAMES
-from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_user_id, get_chat_id, get_leaderboard, \
-    add_to_leaderboard
-from rsa_decrypt import decrypt, encode, decode
+from config import ADMINS_ID, RULES_TEXT, HELP_TEXT, START_TEXT, ABOUT_TEXT, SCREENSHOTS_LINKS, GAME_URLS, \
+    GAME_SHORT_NAMES, RULES_PHOTO, START_GIF
+from db import add_to_users_db, add_to_chats_db, get_all_id, get_all_users, get_leaderboard, add_to_leaderboard
+from rsa_decrypt import decrypt, decode
 from logger import save_log
+from services import get_user_info, get_chat_info, send_game_request
 
 
-async def restart_server(dp):
-    for admin in ADMINS_ID:
-        msg = await bot.send_message(admin, text='Restart server &#127758;')
-    await save_log(msg=msg)
-
-
-async def delete_message(message: Message, sleep_time: int = 0):
-    await sleep(sleep_time)
-    with suppress(exceptions.MessageCantBeDeleted, exceptions.MessageToDeleteNotFound):
-        await message.delete()
-
-
-# @dp.inline_handler()
-# async def inline_handler(inline_query: types.InlineQuery):
-#     text = inline_query.query or 'echo'
-#     input_content = types.InputTextMessageContent(text)
-#     result_id: str = hashlib.md5(text.encode()).hexdigest()
-#     item = types.InlineQueryResultArticle(
-#         id=result_id,
-#         title=f'Result {text!r}',
-#         input_message_content=input_content,
-#     )
-#     await bot.answer_inline_query(inline_query.id, results=[item], cache_time=1)
-
-
-@dp.callback_query_handler(lambda callback_query: \
-        callback_query.game_short_name in GAME_SHORT_NAMES)
-async def send_welcome(callback_query: types.CallbackQuery):
-    await bot.answer_callback_query(callback_query.id, url=GAME_URLS[GAME_SHORT_NAMES.index(callback_query.game_short_name)])
+@dp.callback_query_handler(lambda cq: cq.game_short_name in GAME_SHORT_NAMES)
+async def send_welcome(cq: types.CallbackQuery):
+    await bot.answer_callback_query(cq.id, url=GAME_URLS[GAME_SHORT_NAMES.index(cq.game_short_name)])
 
 
 @dp.inline_handler()
 async def send_game(inline_query: types.InlineQuery):
     r = []
-    print('inline_query', inline_query.query)
     for i, game in enumerate(GAME_SHORT_NAMES):
         if inline_query.query in game:
             r.append(InlineQueryResultGame(id=str(uuid4()), game_short_name=GAME_SHORT_NAMES[i]))
+
     await bot.answer_inline_query(inline_query.id, r)
 
 
@@ -72,53 +45,6 @@ async def show(message: Message):
     await save_log(msg=message)
 
 
-def get_user_info(msg: Message):
-    return msg.from_user.id, msg.from_user.first_name, msg.from_user.last_name, msg.from_user.username
-
-
-def get_chat_info(msg: Message):
-    return msg.chat.id, msg.chat.first_name, msg.chat.last_name, msg.chat.username, msg.chat.full_name
-
-
-def get_data(msg: Message):
-    data = msg.text.split('=')
-
-    room, opponent = data[1], data[2]
-    if opponent == 'all':
-        return room, opponent
-
-    opponent = int(opponent)
-    opponent_id = get_user_id(opponent) if opponent > 0 else get_chat_id(abs(opponent))
-
-    return room, opponent_id
-
-
-async def send_game_request(msg: Message, sender_id, sender_name, sender_username):
-    room, opponent = get_data(msg)
-    users = get_all_id("user_id", "users") if opponent == 'all' else [opponent]
-    # groups = (get_all_id("chat_id", "chats"))
-    # users += groups
-    play_key = InlineKeyboardMarkup()
-    player = f'{sender_name}({sender_username})' if sender_username else f'{sender_name}()'
-    encode_player = await encode(player)
-
-    play_key.add(InlineKeyboardButton('Play!', url=URL_GAME_SITE + f'?room={room}&opponent={encode_player}'))
-    await save_log(text=f'users: {users}, sender_id: {sender_id}')
-
-    for user in users:
-        if user != sender_id:
-            try:
-                request_msg = await bot.send_message(user, f'{player}:\nDo you wanna play with me?',
-                                                     reply_markup=play_key, parse_mode='None')
-                create_task(delete_message(request_msg, 120))
-                await save_log(text=f'request was sent to {user}')
-            except:
-                await save_log(text=f'skip user: {user}')
-                continue
-
-    await msg.answer('request was sent')
-
-
 @dp.message_handler(Command('start'))
 async def send_welcome(message: Message):
     user_id, user_name, user_surname, user_nickname = get_user_info(message)
@@ -132,13 +58,13 @@ async def send_welcome(message: Message):
         await send_game_request(message, user_id, user_name, user_nickname)
     else:
         await message.answer(START_TEXT)
-        await message.answer_animation(
-            animation='https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif')
+        await message.answer_animation(animation=START_GIF, caption='Example of the game')
 
 
 @dp.message_handler(Command('send_all'))
 async def send_all(message: Message):
     await types.ChatActions.typing()
+
     if message.from_user.id in ADMINS_ID:
         await message.answer('start')
         users = get_all_id("user_id", "users")
@@ -151,9 +77,7 @@ async def send_all(message: Message):
             except:
                 await save_log(text=f'skip user: {user}')
                 continue
-
         await message.answer('done')
-
     else:
         await message.answer('error')
 
@@ -169,8 +93,7 @@ async def show_help(message: Message):
 async def show_rules(message: Message):
     await types.ChatActions.typing()
     await message.answer(RULES_TEXT, parse_mode='HTML')
-    await message.answer_photo(
-        'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/main/screenshots/image_2021-09-12_11-25-36.png')
+    await message.answer_photo(RULES_PHOTO)
     await save_log(msg=message)
 
 
@@ -183,48 +106,45 @@ async def show_rules(message: Message):
 
 @dp.message_handler(Command('get_all'))
 async def show_all_users(message: Message):
-    if message.from_user.id in ADMINS_ID:
-        users = get_all_users('users')
-        chats = get_all_users('chats')
-        file_path = create_exel(users, chats)
-        await types.ChatActions.upload_document()
-        await message.answer_document(open(file_path, "rb"))
-        await save_log(msg=message)
-        delete_file(file_path)
+    if message.from_user.id not in ADMINS_ID:
+        return
+    users = get_all_users('users')
+    chats = get_all_users('chats')
+    file_path = create_exel(users, chats)
+    file = open(file_path, 'rb')
+    await types.ChatActions.upload_document()
+    await message.answer_document(file)
+    await save_log(msg=message)
+
+    while os.path.exists(file_path):
+        try:
+            delete_file(file_path)
+        except:
+            continue
 
 
 @dp.message_handler(Command('screenshots'))
 async def show_screens(message: Message):
     await types.ChatActions.upload_photo()
+
     media = types.MediaGroup()
+
     for screenshot in SCREENSHOTS_LINKS:
         media.attach_photo(screenshot)
+
     await message.answer_media_group(media)
     await save_log(msg=message)
-
-
-# @dp.message_handler(
-#     content_types=['document', 'text', 'audio', 'photo', 'sticker', 'video', 'video_note', 'voice', 'location',
-#                    'contact'])
-# async def send_file(message: Message):
-#     if message.from_user.id in ADMINS_ID:
-#         users = get_all_id("user_id", "users")
-#     for user in users:
-#         try:
-#             await bot.forward_message(user, message.chat.id, message.message_id)
-#             print(f'message was sent to {user}')
-#         except:
-#             print("skip user: ", user)
-#             continue
 
 
 @dp.message_handler(Command('decrypt'))
 async def decrypt_message(message: Message):
     await types.ChatActions.typing()
-    await save_log(msg=message)
+
     encrypted_msg = message.text[message.text.find(' '):]
     decrypted_msg = decrypt(encrypted_msg)
+
     await message.answer(decrypted_msg)
+    await save_log(msg=message)
 
 
 @dp.message_handler(Command('test'))
@@ -286,7 +206,6 @@ async def send_update(message: Message):
         update_message = await bot.send_photo(message.from_user.id, photo=open('latest_version/update.png', 'rb'),
                                               caption=update_text)
         log = ''
-
         for user in users:
             try:
                 log += f'update was sent to {user}\n'

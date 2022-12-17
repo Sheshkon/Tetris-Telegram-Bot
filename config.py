@@ -5,18 +5,27 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BOT_TOKEN = os.environ['TOKEN']
-URL_GAME_SITE = 'https://sheshkon.github.io/tetris-site/'
 ADMINS_ID = (int(os.environ['ADMIN_ID_1']), int(os.environ['ADMIN_ID_2']))
+LOG_ID = os.environ['LOG_ID']
 DB_URI = os.environ['DB_URI']
 PRIVATE_KEY = os.environ['PRIVATE_KEY']
-START_TEXT = "Hi!\nI'm Tetris Bot!\nUse /help command to see list of commands."
-LOG_ID = os.environ['LOG_ID']
+
+URL_GAME_SITE = 'https://sheshkon.github.io/tetris-site/'
 URL_WEB_GAME = 'https://sheshkon.github.io/web_tetris'
 
-GAME_SHORT_NAMES = ('web_tetris', 'tic_tac_toe')
-GAME_URLS = ('https://sheshkon.github.io/web_tetris/', 'https://sheshkon.github.io/tic_tac_toe/')
+START_GIF = 'https://raw.githubusercontent.com/vitaliysheshkoff/Tetris-Multiplayer/main/screenshots/play.gif'
+START_TEXT = "Hi!\n" \
+             "I'm Tetris Bot!\n" \
+             "Use /help command to see list of commands."
 
 
+GAME_SHORT_NAMES = ('web_tetris', 'tic_tac_toe', 'test')
+GAME_URLS = (URL_WEB_GAME,
+            'https://sheshkon.github.io/tic_tac_toe/',
+            'https://sheshkon.github.io/test/')
+
+
+RULES_PHOTO = 'https://github.com/vitaliysheshkoff/Tetris-Multiplayer/raw/main/screenshots/image_2021-09-12_11-25-36.png'
 RULES_TEXT = '<b>Goals</b>\n\n' \
              '   The aim in Tetris is simple; you bring down\n' \
              'block from the top of the screen. You can \n' \
